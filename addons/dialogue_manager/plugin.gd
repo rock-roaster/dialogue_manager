@@ -3,7 +3,7 @@ extends EditorPlugin
 
 
 const SYSTEM_NAME: String = "Dialogue"
-const SYSTEM_PATH: String = "res://addons/dialogue_manager/script/dialogue_manager.gd"
+const SYSTEM_PATH: String = "res://addons/dialogue_manager/dialogue_manager.gd"
 
 const SETTING_SCRIPT: Script = preload("res://addons/dialogue_manager/setting.gd")
 const SETTING_INFO_DICT: Dictionary[StringName, Dictionary] = SETTING_SCRIPT.SETTING_INFO_DICT
