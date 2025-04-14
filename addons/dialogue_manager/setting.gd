@@ -13,6 +13,16 @@ const SETTING_INFO_DICT: Dictionary[StringName, Dictionary] = {
 		"basic": true,
 		"default": 100,
 	},
+
+	"break_tweening":
+	{
+		"name": SETTING_DIALOGUE + "break_tweening",
+		"type": TYPE_BOOL,
+		"hint": PROPERTY_HINT_NONE,
+		"hint_string": "",
+		"basic": true,
+		"default": true,
+	},
 }
 
 

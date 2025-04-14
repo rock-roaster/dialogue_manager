@@ -28,36 +28,37 @@ func get_next_line() -> DialogueLine:
 	return next_line
 
 
-func add_text(text: String, auto_advance: bool = false) -> void:
-	var new_line: DialogueLine = DialogueLine.new()
-	new_line.set_type(DialogueLine.DialogueType.TEXT)
+func add_text(text: Variant, auto_advance: bool = false) -> DialogueLine:
+	var new_line: DialogueLine = DialogueLine.new(0)
+	if text is String: text = [text] as Array
 	new_line.set_data("text", text)
 	new_line.set_data("auto_advance", auto_advance)
 	_dialogue_lines.append(new_line)
+	return new_line
 
 
 func add_callable(
 		callable: Callable,
 		await_call: bool = false,
 		auto_advance: bool = true,
-		) -> void:
-	var new_line: DialogueLine = DialogueLine.new()
-	new_line.set_type(DialogueLine.DialogueType.CALLABLE)
+		) -> DialogueLine:
+	var new_line: DialogueLine = DialogueLine.new(1)
 	new_line.set_data("callable", callable)
 	new_line.set_data("await", await_call)
 	new_line.set_data("auto_advance", auto_advance)
 	_dialogue_lines.append(new_line)
+	return new_line
 
 
-func add_timer(wait_time: float) -> void:
+func add_timer(wait_time: float) -> DialogueLine:
 	var callable: Callable = func():
 		await Dialogue.get_tree().create_timer(wait_time).timeout
-	add_callable(callable, true, true)
+	return add_callable(callable, true, true)
 
 
 func add_script(
 		path: String,
 		data: Dictionary[StringName, Variant] = {},
-		) -> void:
+		) -> DialogueLine:
 	var callable: Callable = Dialogue.load_dialogue_script.bind(path, data)
-	add_callable(callable, false, true)
+	return add_callable(callable, false, true)

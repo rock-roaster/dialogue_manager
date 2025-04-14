@@ -3,25 +3,18 @@ class_name DialogueLine
 
 
 enum DialogueType {
-	TEXT,
-	CALLABLE,
+	TEXT = 0,
+	CALLABLE = 1,
 }
 
 var _dialogue_type: DialogueType
 var _dialogue_data: Dictionary[StringName, Variant]
 
 
-func set_type(type: DialogueType) -> void:
+func _init(type: int) -> void:
 	_dialogue_type = type
-
-
-func set_data(key: StringName, value: Variant) -> void:
-	_dialogue_data.set(key, value)
-
-
-func _init() -> void:
 	_dialogue_data = {
-		"text": "",
+		"text": [""],
 		"callable": Callable(),
 		"await": false,
 		"auto_advance": false,
@@ -40,9 +33,22 @@ func get_data(key: StringName, default: Variant = null) -> Variant:
 	return _dialogue_data.get(key, default)
 
 
-func get_text() -> String:
-	return get_data("text", "")
+func get_text() -> Array:
+	return get_data("text", [""])
 
 
 func get_callable() -> Callable:
 	return get_data("callable", Callable())
+
+
+func set_data(key: StringName, value: Variant) -> DialogueLine:
+	_dialogue_data.set(key, value)
+	return self
+
+
+func set_data_dict(
+		data: Dictionary[StringName, Variant],
+		overwrite: bool = true,
+		) -> DialogueLine:
+	_dialogue_data.merge(data, overwrite)
+	return self

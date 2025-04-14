@@ -1,4 +1,5 @@
 extends Node
+# class_name Dialogue
 
 
 signal dialogue_line_pushed(line: DialogueLine)
@@ -15,7 +16,11 @@ var _dialogue_script_processing: DialogueScript
 var _can_push_dialogue_line: bool
 
 var _dialogue_line_history: Array[DialogueLine]
-var _dialogue_line_history_maximum: int = SETTING_SCRIPT.get_setting_value("log_history")
+var _dialogue_line_history_maximum: int = get_setting_value("log_history")
+
+
+func get_setting_value(key: StringName, default: Variant = null) -> Variant:
+	return SETTING_SCRIPT.get_setting_value(key, default)
 
 
 func _init() -> void:

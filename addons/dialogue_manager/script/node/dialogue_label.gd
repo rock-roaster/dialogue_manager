@@ -4,11 +4,20 @@ class_name DialogueLabel
 
 signal dialogue_line_showed (line: DialogueLine)
 
-@export_range(0.0, 100.0, 0.1) var ms_per_char: float = 40.0
-@export var can_break: bool = true
+const dialogue_theme: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
+
+@export_range(0.0, 100.0, 1.0, "or_greater")
+var ms_per_char: float = 25.0
+
+@export_range(0.0, 1.0, 0.01, "or_greater")
+var wait_between_parts: float = 0.25
 
 var _text_tweener: Tween
 var _text_tweening: bool
+
+var _dialogue_line_tweening: DialogueLine
+
+var _break_tweening: bool = Dialogue.get_setting_value("break_tweening")
 
 
 func _init() -> void:
@@ -16,42 +25,72 @@ func _init() -> void:
 	fit_content = true
 	scroll_active = false
 	autowrap_mode = TextServer.AUTOWRAP_OFF
+	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	theme = dialogue_theme.duplicate()
 
+	_text_tweener = null
 	_text_tweening = false
 
 
-func break_tween() -> void:
-	if not can_break: return
-
-	if _text_tweener != null:
-		_text_tweener.kill()
-		_text_tweener.finished.emit()
-
-	visible_ratio = 1.0
+static func decode_bb(bb_code: String) -> String:
+	var parsed_text: String = bb_code
+	while parsed_text.contains("[") && parsed_text.contains("]"):
+		var index_l: int = parsed_text.find("[")
+		var index_r: int = parsed_text.find("]")
+		if not index_l < index_r: break
+		var length: int = index_r - index_l + 1
+		parsed_text = parsed_text.erase(index_l, length)
+	return parsed_text
 
 
 func show_line_text(line: DialogueLine) -> void:
 	if line == null: return
 	if not line.is_type_text(): return
 
-	var dialogue_text: String = line.get_text()
+	_dialogue_line_tweening = line
+
+	var line_text: Array = line.get_text()
 	var dialogue_auto: bool = line.get_data("auto_advance")
 
+	var string_text_array: Array = line_text.filter(
+		func(value: Variant) -> bool: return value is String)
+
+	var showed_text: String = "".join(string_text_array)
+
 	visible_ratio = 0.0
-	set_text(dialogue_text)
-	await _tween_ratio(1.0)
+	set_text(showed_text)
 
-	if dialogue_auto: await get_tree().create_timer(0.2).timeout
-	dialogue_line_showed.emit(line)
+	var showed_chars: int = 0
+	for text_part in line_text:
+		if text_part is Callable:
+			await text_part.call()
+
+		if text_part is String:
+			showed_chars += decode_bb(text_part).length()
+			await _tween_characters(showed_chars)
+			if showed_chars >= showed_text.length(): break
+			await get_tree().create_timer(wait_between_parts).timeout
+
+	if dialogue_auto:
+		await get_tree().create_timer(wait_between_parts).timeout
+
+	dialogue_line_showed.emit(_dialogue_line_tweening)
+	_dialogue_line_tweening = null
 
 
-func _get_visible_char() -> int:
-	return get_parsed_text().c_escape().length()
+func is_tweening() -> bool:
+	return _text_tweening
 
 
-func _get_tween_time(char: int) -> float:
-	var tween_time: float = char * ms_per_char * 0.001
-	return tween_time
+func break_tween() -> void:
+	if not _break_tweening: return
+	if _dialogue_line_tweening == null: return
+
+	if _text_tweener != null: _text_tweener.kill()
+	visible_ratio = 1.0
+
+	dialogue_line_showed.emit(_dialogue_line_tweening)
+	_dialogue_line_tweening = null
 
 
 func _refresh_tweener() -> Tween:
@@ -61,25 +100,16 @@ func _refresh_tweener() -> Tween:
 	return _text_tweener
 
 
-func _tween_character(char: int) -> void:
-	var tween_char: int = absi(visible_characters - char)
-	var tween_time: float = _get_tween_time(tween_char)
-
-	_refresh_tweener()
-	_text_tweener.tween_property(self, ^"visible_characters", char, tween_time)
-
-	_text_tweening = true
-	await _text_tweener.finished
-	_text_tweening = false
+func _get_tween_time(chars: int) -> float:
+	return chars * ms_per_char * 0.001
 
 
-func _tween_ratio(ratio: float) -> void:
-	var ratio_gaps: float = absf(visible_ratio - ratio)
-	var tween_char: float = _get_visible_char() * ratio_gaps
-	var tween_time: float = _get_tween_time(tween_char)
+func _tween_characters(chars: int) -> void:
+	var chars_diff: int = absi(visible_characters - chars)
+	var tween_time: float = _get_tween_time(chars_diff)
 
-	_refresh_tweener()
-	_text_tweener.tween_property(self, ^"visible_ratio", ratio, tween_time)
+	_refresh_tweener().tween_property(
+		self, ^"visible_characters", chars, tween_time)
 
 	_text_tweening = true
 	await _text_tweener.finished
