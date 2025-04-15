@@ -23,6 +23,26 @@ const SETTING_INFO_DICT: Dictionary[StringName, Dictionary] = {
 		"basic": true,
 		"default": true,
 	},
+
+	"auto_advance_time":
+	{
+		"name": SETTING_DIALOGUE + "auto_advance_time",
+		"type": TYPE_FLOAT,
+		"hint": PROPERTY_HINT_RANGE,
+		"hint_string": "0.0, 1.0, or_greater",
+		"basic": true,
+		"default": 0.25,
+	},
+
+	"msec_per_character":
+	{
+		"name": SETTING_DIALOGUE + "msec_per_character",
+		"type": TYPE_FLOAT,
+		"hint": PROPERTY_HINT_RANGE,
+		"hint_string": "0.0, 100.0, or_greater",
+		"basic": true,
+		"default": 25.0,
+	},
 }
 
 

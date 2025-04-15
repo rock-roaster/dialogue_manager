@@ -1,23 +1,56 @@
 extends RichTextLabel
 class_name DialogueLabel
+## 用以显示对话行内容的富文本气泡。
 
 
 signal dialogue_line_showed (line: DialogueLine)
 
-const dialogue_theme: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
+## 气泡弹出方向
+enum PopupDirection {
+	NONE = 0,   ## 居中弹出
+	LEFT = 1,   ## 向左弹出
+	RIGHT = 2,  ## 向右弹出
+	UP = 3,     ## 向上弹出
+	DOWN = 4,   ## 向下弹出
+}
 
-@export_range(0.0, 100.0, 1.0, "or_greater")
-var ms_per_char: float = 25.0
+const POPUP_OFFSET: Dictionary[int, Dictionary] = {
+	PopupDirection.NONE: {
+		"pivot_offset": Vector2(0.5, 0.5),
+		"position_offset_size": Vector2(-0.5, -0.5),
+		"position_offset_plus": Vector2.ZERO,
+	},
+	PopupDirection.LEFT: {
+		"pivot_offset": Vector2(1.0, 0.5),
+		"position_offset_size": Vector2(-1.0, -0.5),
+		"position_offset_plus": Vector2(-24.0, 0.0),
+	},
+	PopupDirection.RIGHT: {
+		"pivot_offset": Vector2(0.0, 0.5),
+		"position_offset_size": Vector2(+0.0, -0.5),
+		"position_offset_plus": Vector2(+24.0, 0.0),
+	},
+	PopupDirection.UP: {
+		"pivot_offset": Vector2(0.5, 1.0),
+		"position_offset_size": Vector2(-0.5, -1.0),
+		"position_offset_plus": Vector2(0.0, -24.0),
+	},
+	PopupDirection.DOWN: {
+		"pivot_offset": Vector2(0.5, 0.0),
+		"position_offset_size": Vector2(-0.5, +0.0),
+		"position_offset_plus": Vector2(0.0, +24.0),
+	},
+}
 
-@export_range(0.0, 1.0, 0.01, "or_greater")
-var wait_between_parts: float = 0.25
+const DIALOGUE_THEME: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
 
-var _text_tweener: Tween
-var _text_tweening: bool
+@export var popup_position: Vector2
+@export var popup_direction: PopupDirection
 
+var _label_tweener: Tween
 var _dialogue_line_tweening: DialogueLine
 
-var _break_tweening: bool = Dialogue.get_setting_value("break_tweening")
+var _msec_per_char: float = Dialogue.get_setting_value("msec_per_character")
 
 
 func _init() -> void:
@@ -26,21 +59,21 @@ func _init() -> void:
 	scroll_active = false
 	autowrap_mode = TextServer.AUTOWRAP_OFF
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-	theme = dialogue_theme.duplicate()
+	clip_contents = false
 
-	_text_tweener = null
-	_text_tweening = false
+	scale = Vector2.ZERO
+	theme = DIALOGUE_THEME.duplicate()
 
 
-static func decode_bb(bb_code: String) -> String:
-	var parsed_text: String = bb_code
-	while parsed_text.contains("[") && parsed_text.contains("]"):
-		var index_l: int = parsed_text.find("[")
-		var index_r: int = parsed_text.find("]")
-		if not index_l < index_r: break
-		var length: int = index_r - index_l + 1
-		parsed_text = parsed_text.erase(index_l, length)
-	return parsed_text
+## 移除字符串中的所有 BBCode 标签
+static func strip_bbcode(bbcode_text: String) -> String:
+	var bbcode_regex: RegEx = RegEx.new()
+	bbcode_regex.compile("\\[\\/?[a-zA-Z0-9_=\\s\\-\\#\\.\\+\\*\\?]+\\]")
+	return bbcode_regex.sub(bbcode_text, "", true).replace("\\[", "[").replace("\\]", "]")
+
+
+func is_tweening() -> bool:
+	return _label_tweener != null && _label_tweener.is_running()
 
 
 func show_line_text(line: DialogueLine) -> void:
@@ -49,59 +82,70 @@ func show_line_text(line: DialogueLine) -> void:
 
 	_dialogue_line_tweening = line
 
-	var line_text: Array = line.get_text()
-	var dialogue_auto: bool = line.get_data("auto_advance")
-
-	var string_text_array: Array = line_text.filter(
+	var line_text_array: Array = line.get_text()
+	var temp_text_array: Array = line_text_array.filter(
 		func(value: Variant) -> bool: return value is String)
-
-	var showed_text: String = "".join(string_text_array)
+	var text_stream: String = "".join(
+		temp_text_array).replace("\\[", "[").replace("\\]", "]")
 
 	visible_ratio = 0.0
-	set_text(showed_text)
+	scale = Vector2.ZERO
+	parse_bbcode(text_stream)
+
+	_tween_process.call_deferred(line_text_array)
+	await dialogue_line_showed
+
+
+func _tween_process(text_array: Array) -> void:
+	_refresh_popup_offset()
+	await _tween_scale(1.0, 0.2)
 
 	var showed_chars: int = 0
-	for text_part in line_text:
-		if text_part is Callable:
+	for text_part in text_array: match typeof(text_part):
+		TYPE_CALLABLE:
 			await text_part.call()
-
-		if text_part is String:
-			showed_chars += decode_bb(text_part).length()
+		TYPE_INT, TYPE_FLOAT:
+			await get_tree().create_timer(text_part).timeout
+		TYPE_STRING, TYPE_STRING_NAME:
+			showed_chars += strip_bbcode(text_part).length()
 			await _tween_characters(showed_chars)
-			if showed_chars >= showed_text.length(): break
-			await get_tree().create_timer(wait_between_parts).timeout
-
-	if dialogue_auto:
-		await get_tree().create_timer(wait_between_parts).timeout
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)
 	_dialogue_line_tweening = null
 
 
-func is_tweening() -> bool:
-	return _text_tweening
+func _refresh_popup_offset() -> void:
+	pivot_offset = _get_popup_pivot_offset()
+	position = popup_position + _get_popup_position_offset()
+	print(pivot_offset)
 
 
-func break_tween() -> void:
-	if not _break_tweening: return
-	if _dialogue_line_tweening == null: return
+func _get_popup_pivot_offset() -> Vector2:
+	return POPUP_OFFSET[popup_direction].get("pivot_offset") * size
 
-	if _text_tweener != null: _text_tweener.kill()
-	visible_ratio = 1.0
 
-	dialogue_line_showed.emit(_dialogue_line_tweening)
-	_dialogue_line_tweening = null
+func _get_popup_position_offset() -> Vector2:
+	var position_offset_basic: Vector2 = POPUP_OFFSET[popup_direction].get("position_offset_size") * size
+	var position_offset_after: Vector2 = POPUP_OFFSET[popup_direction].get("position_offset_plus")
+	return position_offset_basic + position_offset_after
 
 
 func _refresh_tweener() -> Tween:
-	if _text_tweener != null:
-		_text_tweener.kill()
-	_text_tweener = create_tween()
-	return _text_tweener
+	if _label_tweener != null:
+		_label_tweener.kill()
+	_label_tweener = create_tween()
+	return _label_tweener
+
+
+func _tween_scale(times: float, duration: float) -> void:
+	_refresh_tweener().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	_label_tweener.tween_property(
+		self, ^"scale", Vector2.ONE * times, duration)
+	await _label_tweener.finished
 
 
 func _get_tween_time(chars: int) -> float:
-	return chars * ms_per_char * 0.001
+	return chars * _msec_per_char * 0.001
 
 
 func _tween_characters(chars: int) -> void:
@@ -110,7 +154,4 @@ func _tween_characters(chars: int) -> void:
 
 	_refresh_tweener().tween_property(
 		self, ^"visible_characters", chars, tween_time)
-
-	_text_tweening = true
-	await _text_tweener.finished
-	_text_tweening = false
+	await _label_tweener.finished

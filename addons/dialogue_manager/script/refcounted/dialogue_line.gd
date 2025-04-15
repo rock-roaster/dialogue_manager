@@ -52,3 +52,8 @@ func set_data_dict(
 		) -> DialogueLine:
 	_dialogue_data.merge(data, overwrite)
 	return self
+
+
+#func set_ms_per_char(value: float) -> DialogueLine:
+	#_dialogue_data.set("ms_per_char", value)
+	#return self
