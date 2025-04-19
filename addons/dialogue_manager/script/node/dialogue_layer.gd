@@ -15,10 +15,12 @@ var _auto_advance_time: float = Dialogue.get_setting_value("auto_advance_time")
 
 
 func _init() -> void:
-	_popup_position = Vector2(1920, 1080) * 0.5
-	_popup_direction = DialogueLabel.PopupDirection.NONE
-
 	Dialogue.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
+
+
+func _ready() -> void:
+	_popup_position = get_viewport().size * 0.5
+	_popup_direction = DialogueLabel.PopupDirection.NONE
 
 
 func _input(event: InputEvent) -> void:
@@ -60,13 +62,24 @@ func set_popup_direction(direction: DialogueLabel.PopupDirection) -> void:
 	_popup_direction = direction
 
 
-func popup_dialogue_label(line: DialogueLine, label_name: StringName) -> DialogueLabel:
+func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
 	var line_position: Vector2 = _popup_position
 	var line_direction: DialogueLabel.PopupDirection = _popup_direction
+	var line_bbcode_enabled: bool = true
+	var line_gaps_between_parts: float = 0.0
+
 	if line.has_data("position"): line_position = line.get_data("position")
 	if line.has_data("direction"): line_direction = line.get_data("direction")
+	if line.has_data("bbcode"): line_bbcode_enabled = line.get_data("bbcode")
+	if line.has_data("gaps_time"): line_gaps_between_parts = line.get_data("gaps_time")
 
-	var new_dialogue_label: DialogueLabel = DialogueLabel.new(line_position, line_direction)
+	var new_dialogue_label: DialogueLabel = DialogueLabel.new(
+		line_position,
+		line_direction,
+		line_bbcode_enabled,
+		line_gaps_between_parts,
+		)
+
 	_popup_dialogue_label = new_dialogue_label
 	_dialogue_labels.set(label_name, new_dialogue_label)
 	add_child(new_dialogue_label)

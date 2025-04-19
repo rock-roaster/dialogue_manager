@@ -4,9 +4,9 @@ extends StyleBox
 class_name StyleBoxDialogVoice
 
 
-@export var corner_radius: float = 20.0
+@export var corner_radius: float = 12.0
 @export var corner_point_count: int = 8
-@export var border_width: int = 2
+@export var border_width: int = 1
 @export var solid_color: Color = Color(Color.BLACK, 0.75)
 @export var border_color: Color = Color.WHITE
 

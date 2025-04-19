@@ -48,6 +48,7 @@ const POPUP_OFFSET: Dictionary[int, Dictionary] = {
 
 var _popup_position: Vector2
 var _popup_direction: PopupDirection
+var _gaps_between_parts: float
 
 var _label_tweener: Tween
 var _dialogue_line_tweening: DialogueLine
@@ -56,11 +57,13 @@ var _ms_per_char: float = Dialogue.get_setting_value("msec_per_character")
 
 
 func _init(
-	popup_position: Vector2 = position,
+	popup_position: Vector2,
 	popup_direction: PopupDirection = PopupDirection.NONE,
+	enable_bbcode: bool = true,
+	gaps_between_parts: float = 0.0,
 	) -> void:
 
-	bbcode_enabled = true
+	bbcode_enabled = enable_bbcode
 	fit_content = true
 	scroll_active = false
 	autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -72,13 +75,18 @@ func _init(
 
 	_popup_position = popup_position
 	_popup_direction = popup_direction
+	_gaps_between_parts = gaps_between_parts
 
 
 ## 移除字符串中的所有 BBCode 标签
-static func strip_bbcode(bbcode_text: String) -> String:
+func strip_bbcode(bbcode_text: String) -> String:
+	if not bbcode_enabled: return bbcode_text
 	var bbcode_regex: RegEx = RegEx.new()
-	bbcode_regex.compile("\\[\\/?[a-zA-Z0-9_=\\s\\-\\#\\.\\+\\*\\?]+\\]")
-	return bbcode_regex.sub(bbcode_text, "", true).replace("\\[", "[").replace("\\]", "]")
+	bbcode_regex.compile("\\[.*?\\]")
+	return bbcode_regex.sub(bbcode_text, "", true)
+
+	#bbcode_regex.compile("\\[\\/?[a-zA-Z0-9_=\\s\\-\\#\\.\\+\\*\\?]+\\]")
+	#return bbcode_regex.sub(bbcode_text, "", true).replace("\\[", "[").replace("\\]", "]")
 
 
 func is_tweening() -> bool:
@@ -86,20 +94,16 @@ func is_tweening() -> bool:
 
 
 func show_line_text(line: DialogueLine) -> void:
-	#if line == null: return
-	#if not line.is_type_text(): return
-
 	_dialogue_line_tweening = line
 
 	var line_text_array: Array = line.get_text()
 	var temp_text_array: Array = line_text_array.filter(
 		func(value: Variant) -> bool: return value is String)
-	var text_stream: String = "".join(
-		temp_text_array).replace("\\[", "[").replace("\\]", "]")
+	var text_stream: String = "".join(temp_text_array)
 
 	visible_ratio = 0.0
 	scale = Vector2.ZERO
-	parse_bbcode(text_stream)
+	set_text(text_stream)
 
 	_tween_process.call_deferred(line_text_array)
 	await dialogue_line_showed
@@ -110,14 +114,16 @@ func _tween_process(text_array: Array) -> void:
 	await _tween_scale(1.0, 0.2)
 
 	var showed_chars: int = 0
-	for text_part in text_array: match typeof(text_part):
-		TYPE_CALLABLE:
-			await text_part.call()
-		TYPE_INT, TYPE_FLOAT:
-			await get_tree().create_timer(text_part).timeout
-		TYPE_STRING, TYPE_STRING_NAME:
-			showed_chars += strip_bbcode(text_part).length()
-			await _tween_characters(showed_chars)
+	for text_part in text_array:
+		match typeof(text_part):
+			TYPE_CALLABLE:
+				await text_part.call()
+			TYPE_INT, TYPE_FLOAT:
+				await get_tree().create_timer(text_part).timeout
+			TYPE_STRING, TYPE_STRING_NAME:
+				showed_chars += strip_bbcode(text_part).length()
+				await _tween_characters(showed_chars)
+		await get_tree().create_timer(_gaps_between_parts).timeout
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)
 	_dialogue_line_tweening = null
