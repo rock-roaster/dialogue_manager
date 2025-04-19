@@ -14,6 +14,10 @@ enum PopupDirection {
 	DOWN = 4,   ## 向下弹出
 }
 
+const DIALOGUE_THEME: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
+const DIALOGUE_BUBBLE_VOICE: StyleBoxDialogVoice = preload("res://addons/dialogue_manager/theme/stylebox/stylebox_dialog_voice.tres")
+const DIALOGUE_BUBBLE_SPEAK: StyleBoxDialogSpeak = preload("res://addons/dialogue_manager/theme/stylebox/stylebox_dialog_speak.tres")
+
 const POPUP_OFFSET: Dictionary[int, Dictionary] = {
 	PopupDirection.NONE: {
 		"pivot_offset": Vector2(0.5, 0.5),
@@ -42,27 +46,32 @@ const POPUP_OFFSET: Dictionary[int, Dictionary] = {
 	},
 }
 
-const DIALOGUE_THEME: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
-
-@export var popup_position: Vector2
-@export var popup_direction: PopupDirection
+var _popup_position: Vector2
+var _popup_direction: PopupDirection
 
 var _label_tweener: Tween
 var _dialogue_line_tweening: DialogueLine
 
-var _msec_per_char: float = Dialogue.get_setting_value("msec_per_character")
+var _ms_per_char: float = Dialogue.get_setting_value("msec_per_character")
 
 
-func _init() -> void:
+func _init(
+	popup_position: Vector2 = position,
+	popup_direction: PopupDirection = PopupDirection.NONE,
+	) -> void:
+
 	bbcode_enabled = true
 	fit_content = true
 	scroll_active = false
 	autowrap_mode = TextServer.AUTOWRAP_OFF
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-	clip_contents = false
 
+	clip_contents = false
 	scale = Vector2.ZERO
 	theme = DIALOGUE_THEME.duplicate()
+
+	_popup_position = popup_position
+	_popup_direction = popup_direction
 
 
 ## 移除字符串中的所有 BBCode 标签
@@ -77,8 +86,8 @@ func is_tweening() -> bool:
 
 
 func show_line_text(line: DialogueLine) -> void:
-	if line == null: return
-	if not line.is_type_text(): return
+	#if line == null: return
+	#if not line.is_type_text(): return
 
 	_dialogue_line_tweening = line
 
@@ -114,19 +123,34 @@ func _tween_process(text_array: Array) -> void:
 	_dialogue_line_tweening = null
 
 
+func _match_popup_bubble() -> void:
+	var target_stylebox: StyleBoxDialogVoice = DIALOGUE_BUBBLE_VOICE.duplicate() if\
+		(_popup_direction == PopupDirection.NONE) else DIALOGUE_BUBBLE_SPEAK.duplicate()
+	match _popup_direction:
+		PopupDirection.LEFT:
+			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.RIGHT
+		PopupDirection.RIGHT:
+			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.LEFT
+		PopupDirection.UP:
+			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.DOWN
+		PopupDirection.DOWN:
+			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.UP
+	add_theme_stylebox_override("normal", target_stylebox)
+
+
 func _refresh_popup_offset() -> void:
+	_match_popup_bubble()
 	pivot_offset = _get_popup_pivot_offset()
-	position = popup_position + _get_popup_position_offset()
-	print(pivot_offset)
+	position = _popup_position + _get_popup_position_offset()
 
 
 func _get_popup_pivot_offset() -> Vector2:
-	return POPUP_OFFSET[popup_direction].get("pivot_offset") * size
+	return POPUP_OFFSET[_popup_direction].get("pivot_offset") * size
 
 
 func _get_popup_position_offset() -> Vector2:
-	var position_offset_basic: Vector2 = POPUP_OFFSET[popup_direction].get("position_offset_size") * size
-	var position_offset_after: Vector2 = POPUP_OFFSET[popup_direction].get("position_offset_plus")
+	var position_offset_basic: Vector2 = POPUP_OFFSET[_popup_direction].get("position_offset_size") * size
+	var position_offset_after: Vector2 = POPUP_OFFSET[_popup_direction].get("position_offset_plus")
 	return position_offset_basic + position_offset_after
 
 
@@ -145,7 +169,7 @@ func _tween_scale(times: float, duration: float) -> void:
 
 
 func _get_tween_time(chars: int) -> float:
-	return chars * _msec_per_char * 0.001
+	return chars * _ms_per_char * 0.001
 
 
 func _tween_characters(chars: int) -> void:

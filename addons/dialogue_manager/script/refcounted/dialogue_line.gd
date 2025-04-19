@@ -29,6 +29,10 @@ func is_type_callable() -> bool:
 	return _dialogue_type == DialogueType.CALLABLE
 
 
+func has_data(key: StringName) -> bool:
+	return _dialogue_data.has(key)
+
+
 func get_data(key: StringName, default: Variant = null) -> Variant:
 	return _dialogue_data.get(key, default)
 
@@ -54,6 +58,14 @@ func set_data_dict(
 	return self
 
 
-#func set_ms_per_char(value: float) -> DialogueLine:
-	#_dialogue_data.set("ms_per_char", value)
-	#return self
+func set_name(value: StringName) -> DialogueLine:
+	return set_data("name", value)
+
+func set_position(value: Vector2) -> DialogueLine:
+	return set_data("position", value)
+
+func set_direction(value: int) -> DialogueLine:
+	return set_data("direction", value)
+
+func set_ms_per_char(value: float) -> DialogueLine:
+	return set_data("ms_per_char", value)
