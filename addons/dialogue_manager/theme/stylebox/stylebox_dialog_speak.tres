@@ -1,6 +1,6 @@
 [gd_resource type="StyleBox" script_class="StyleBoxDialogSpeak" load_steps=2 format=3 uid="uid://duhmafaa3nrqx"]
 
-[ext_resource type="Script" uid="uid://f86nm1wo1y4w" path="res://addons/dialogue_manager/script/bubble/stylebox_dialog_speak.gd" id="1_qmu06"]
+[ext_resource type="Script" uid="uid://f86nm1wo1y4w" path="res://addons/dialogue_manager/script/stylebox/stylebox_dialog_speak.gd" id="1_qmu06"]
 
 [resource]
 resource_local_to_scene = false

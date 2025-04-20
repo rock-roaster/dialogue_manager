@@ -51,6 +51,7 @@ var _popup_direction: PopupDirection
 var _gaps_between_parts: float
 
 var _label_tweener: Tween
+var _target_characters: int
 var _dialogue_line_tweening: DialogueLine
 
 var _ms_per_char: float = Dialogue.get_setting_value("msec_per_character")
@@ -93,6 +94,13 @@ func is_tweening() -> bool:
 	return _label_tweener != null && _label_tweener.is_running()
 
 
+func skip_tween_part() -> void:
+	if not is_tweening(): return
+	_label_tweener.kill()
+	visible_characters = _target_characters
+	_label_tweener.finished.emit()
+
+
 func show_line_text(line: DialogueLine) -> void:
 	_dialogue_line_tweening = line
 
@@ -113,7 +121,7 @@ func _tween_process(text_array: Array) -> void:
 	_refresh_popup_offset()
 	await _tween_scale(1.0, 0.2)
 
-	var showed_chars: int = 0
+	_target_characters = 0
 	for text_part in text_array:
 		match typeof(text_part):
 			TYPE_CALLABLE:
@@ -121,8 +129,8 @@ func _tween_process(text_array: Array) -> void:
 			TYPE_INT, TYPE_FLOAT:
 				await get_tree().create_timer(text_part).timeout
 			TYPE_STRING, TYPE_STRING_NAME:
-				showed_chars += strip_bbcode(text_part).length()
-				await _tween_characters(showed_chars)
+				_target_characters += strip_bbcode(text_part).length()
+				await _tween_characters(_target_characters)
 		await get_tree().create_timer(_gaps_between_parts).timeout
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)
@@ -160,18 +168,18 @@ func _get_popup_position_offset() -> Vector2:
 	return position_offset_basic + position_offset_after
 
 
+func _tween_scale(times: float, duration: float) -> void:
+	var tween_scale: Tween = create_tween()
+	tween_scale.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	tween_scale.tween_property(self, ^"scale", Vector2.ONE * times, duration)
+	await tween_scale.finished
+
+
 func _refresh_tweener() -> Tween:
 	if _label_tweener != null:
 		_label_tweener.kill()
 	_label_tweener = create_tween()
 	return _label_tweener
-
-
-func _tween_scale(times: float, duration: float) -> void:
-	_refresh_tweener().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
-	_label_tweener.tween_property(
-		self, ^"scale", Vector2.ONE * times, duration)
-	await _label_tweener.finished
 
 
 func _get_tween_time(chars: int) -> float:
@@ -181,7 +189,5 @@ func _get_tween_time(chars: int) -> float:
 func _tween_characters(chars: int) -> void:
 	var chars_diff: int = absi(visible_characters - chars)
 	var tween_time: float = _get_tween_time(chars_diff)
-
-	_refresh_tweener().tween_property(
-		self, ^"visible_characters", chars, tween_time)
+	_refresh_tweener().tween_property(self, ^"visible_characters", chars, tween_time)
 	await _label_tweener.finished

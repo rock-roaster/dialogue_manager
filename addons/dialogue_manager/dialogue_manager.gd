@@ -1,5 +1,4 @@
 extends Node
-# class_name Dialogue
 
 
 signal dialogue_line_pushed(line: DialogueLine)

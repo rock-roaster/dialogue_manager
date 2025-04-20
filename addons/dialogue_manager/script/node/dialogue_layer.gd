@@ -11,6 +11,7 @@ var _popup_direction: DialogueLabel.PopupDirection
 
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
+var _break_tweening: bool = Dialogue.get_setting_value("break_tweening")
 var _auto_advance_time: float = Dialogue.get_setting_value("auto_advance_time")
 
 
@@ -31,7 +32,10 @@ func _on_accept_pressed() -> void:
 	if not enable: return
 	get_viewport().set_input_as_handled()
 
-	if _popup_dialogue_label != null && _popup_dialogue_label.is_tweening(): return
+	if _popup_dialogue_label != null && _popup_dialogue_label.is_tweening():
+		if _break_tweening: _popup_dialogue_label.skip_tween_part()
+		return
+
 	Dialogue.get_next_line()
 
 
@@ -63,15 +67,14 @@ func set_popup_direction(direction: DialogueLabel.PopupDirection) -> void:
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
-	var line_position: Vector2 = _popup_position
-	var line_direction: DialogueLabel.PopupDirection = _popup_direction
-	var line_bbcode_enabled: bool = true
-	var line_gaps_between_parts: float = 0.0
-
-	if line.has_data("position"): line_position = line.get_data("position")
-	if line.has_data("direction"): line_direction = line.get_data("direction")
-	if line.has_data("bbcode"): line_bbcode_enabled = line.get_data("bbcode")
-	if line.has_data("gaps_time"): line_gaps_between_parts = line.get_data("gaps_time")
+	var line_position: Vector2 = line.get_data("position")\
+		if line.has_data("position") else _popup_position
+	var line_direction: DialogueLabel.PopupDirection = line.get_data("direction")\
+		if line.has_data("direction") else _popup_direction
+	var line_bbcode_enabled: bool = line.get_data("bbcode")\
+		if line.has_data("bbcode") else true
+	var line_gaps_between_parts: float = line.get_data("gaps_time")\
+		if line.has_data("gaps_time") else 0.0
 
 	var new_dialogue_label: DialogueLabel = DialogueLabel.new(
 		line_position,

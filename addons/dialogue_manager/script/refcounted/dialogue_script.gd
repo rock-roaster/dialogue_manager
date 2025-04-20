@@ -30,7 +30,7 @@ func get_next_line() -> DialogueLine:
 
 func add_text(text: Variant, auto_advance: bool = false) -> DialogueLine:
 	var new_line: DialogueLine = DialogueLine.new(0)
-	if text is String: text = [text] as Array
+	if text is String or text is StringName: text = [text] as Array
 	new_line.set_data("text", text)
 	new_line.set_data("auto_advance", auto_advance)
 	_dialogue_lines.append(new_line)
