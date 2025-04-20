@@ -4,7 +4,7 @@ class_name DialogueLayer
 
 @export var enable: bool
 
-var _popup_dialogue_label: DialogueLabel
+#var _popup_dialogue_label: DialogueLabel
 
 var _popup_position: Vector2
 var _popup_direction: DialogueLabel.PopupDirection
@@ -32,8 +32,9 @@ func _on_accept_pressed() -> void:
 	if not enable: return
 	get_viewport().set_input_as_handled()
 
-	if _popup_dialogue_label != null && _popup_dialogue_label.is_tweening():
-		if _break_tweening: _popup_dialogue_label.skip_tween_part()
+	var current_label: DialogueLabel = _dialogue_labels.get("")
+	if current_label != null && current_label.is_tweening():
+		if _break_tweening: current_label.skip_tween_part()
 		return
 
 	Dialogue.get_next_line()
@@ -41,17 +42,22 @@ func _on_accept_pressed() -> void:
 
 func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 	if not line.is_type_text(): return
-	close_dialogue_label()
-
 	var label_name: StringName = line.get_data("name", "")
-	popup_dialogue_label(line, label_name)
-	await _popup_dialogue_label.show_line_text(line)
+	close_dialogue_label(label_name)
+
+	if line.get_text() != [""]:
+		var new_dialogue_label: DialogueLabel = popup_dialogue_label(line, label_name)
+		await new_dialogue_label.show_line_text(line)
+
 	_on_dialogue_line_finished(line)
 
 
 func _on_dialogue_line_finished(line: DialogueLine) -> void:
 	if line.get_data("auto_advance"):
-		await get_tree().create_timer(_auto_advance_time).timeout
+		var line_auto_advance_time: float = line.get_data("auto_time") if\
+			line.has_data("auto_time") else _auto_advance_time
+
+		await get_tree().create_timer(line_auto_advance_time).timeout
 		Dialogue._finish_line()
 		Dialogue.get_next_line()
 	else:
@@ -81,9 +87,8 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 		line_direction,
 		line_bbcode_enabled,
 		line_pause_between_parts,
-		)
+	)
 
-	_popup_dialogue_label = new_dialogue_label
 	_dialogue_labels.set(label_name, new_dialogue_label)
 	add_child(new_dialogue_label)
 	return new_dialogue_label

@@ -62,3 +62,7 @@ func add_script(
 		) -> DialogueLine:
 	var callable: Callable = Dialogue.load_dialogue_script.bind(path, data)
 	return add_callable(callable, false, true)
+
+
+func close_label(name: StringName = "", auto_advance: bool = true) -> DialogueLine:
+	return add_text([""], auto_advance).set_name(name).set_auto_time(0.0)

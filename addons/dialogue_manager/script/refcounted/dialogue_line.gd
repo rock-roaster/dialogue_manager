@@ -75,3 +75,6 @@ func set_gaps_time(value: float) -> DialogueLine:
 
 func set_ms_per_char(value: float) -> DialogueLine:
 	return set_data("ms_per_char", value)
+
+func set_auto_time(value: float) -> DialogueLine:
+	return set_data("auto_time", value)
