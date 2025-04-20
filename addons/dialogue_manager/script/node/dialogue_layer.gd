@@ -16,12 +16,12 @@ var _auto_advance_time: float = Dialogue.get_setting_value("auto_advance_time")
 
 
 func _init() -> void:
+	_popup_direction = DialogueLabel.PopupDirection.NONE
 	Dialogue.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
 
 
 func _ready() -> void:
 	_popup_position = get_viewport().size * 0.5
-	_popup_direction = DialogueLabel.PopupDirection.NONE
 
 
 func _input(event: InputEvent) -> void:
@@ -73,14 +73,14 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 		if line.has_data("direction") else _popup_direction
 	var line_bbcode_enabled: bool = line.get_data("bbcode")\
 		if line.has_data("bbcode") else true
-	var line_gaps_between_parts: float = line.get_data("gaps_time")\
+	var line_pause_between_parts: float = line.get_data("gaps_time")\
 		if line.has_data("gaps_time") else 0.0
 
 	var new_dialogue_label: DialogueLabel = DialogueLabel.new(
 		line_position,
 		line_direction,
 		line_bbcode_enabled,
-		line_gaps_between_parts,
+		line_pause_between_parts,
 		)
 
 	_popup_dialogue_label = new_dialogue_label

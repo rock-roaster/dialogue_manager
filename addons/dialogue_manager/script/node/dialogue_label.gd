@@ -48,10 +48,11 @@ const POPUP_OFFSET: Dictionary[int, Dictionary] = {
 
 var _popup_position: Vector2
 var _popup_direction: PopupDirection
-var _gaps_between_parts: float
+var _pause_between_parts: float
 
-var _label_tweener: Tween
 var _target_characters: int
+var _characters_tweener: Tween
+
 var _dialogue_line_tweening: DialogueLine
 
 var _ms_per_char: float = Dialogue.get_setting_value("msec_per_character")
@@ -61,7 +62,7 @@ func _init(
 	popup_position: Vector2,
 	popup_direction: PopupDirection = PopupDirection.NONE,
 	enable_bbcode: bool = true,
-	gaps_between_parts: float = 0.0,
+	pause_between_parts: float = 0.0,
 	) -> void:
 
 	bbcode_enabled = enable_bbcode
@@ -76,7 +77,7 @@ func _init(
 
 	_popup_position = popup_position
 	_popup_direction = popup_direction
-	_gaps_between_parts = gaps_between_parts
+	_pause_between_parts = pause_between_parts
 
 
 ## 移除字符串中的所有 BBCode 标签
@@ -91,14 +92,14 @@ func strip_bbcode(bbcode_text: String) -> String:
 
 
 func is_tweening() -> bool:
-	return _label_tweener != null && _label_tweener.is_running()
+	return _characters_tweener != null && _characters_tweener.is_running()
 
 
 func skip_tween_part() -> void:
 	if not is_tweening(): return
-	_label_tweener.kill()
+	_characters_tweener.kill()
 	visible_characters = _target_characters
-	_label_tweener.finished.emit()
+	_characters_tweener.finished.emit()
 
 
 func show_line_text(line: DialogueLine) -> void:
@@ -119,7 +120,7 @@ func show_line_text(line: DialogueLine) -> void:
 
 func _tween_process(text_array: Array) -> void:
 	_refresh_popup_offset()
-	await _tween_scale(1.0, 0.2)
+	_tween_scale(1.0, 0.2)
 
 	_target_characters = 0
 	for text_part in text_array:
@@ -131,15 +132,15 @@ func _tween_process(text_array: Array) -> void:
 			TYPE_STRING, TYPE_STRING_NAME:
 				_target_characters += strip_bbcode(text_part).length()
 				await _tween_characters(_target_characters)
-		await get_tree().create_timer(_gaps_between_parts).timeout
+		await get_tree().create_timer(_pause_between_parts).timeout
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)
 	_dialogue_line_tweening = null
 
 
 func _match_popup_bubble() -> void:
-	var target_stylebox: StyleBoxDialogVoice = DIALOGUE_BUBBLE_VOICE.duplicate() if\
-		(_popup_direction == PopupDirection.NONE) else DIALOGUE_BUBBLE_SPEAK.duplicate()
+	var target_stylebox: StyleBoxDialogVoice = DIALOGUE_BUBBLE_VOICE.duplicate()\
+		if _popup_direction == PopupDirection.NONE else DIALOGUE_BUBBLE_SPEAK.duplicate()
 	match _popup_direction:
 		PopupDirection.LEFT:
 			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.RIGHT
@@ -176,10 +177,10 @@ func _tween_scale(times: float, duration: float) -> void:
 
 
 func _refresh_tweener() -> Tween:
-	if _label_tweener != null:
-		_label_tweener.kill()
-	_label_tweener = create_tween()
-	return _label_tweener
+	if _characters_tweener != null:
+		_characters_tweener.kill()
+	_characters_tweener = create_tween()
+	return _characters_tweener
 
 
 func _get_tween_time(chars: int) -> float:
@@ -190,4 +191,4 @@ func _tween_characters(chars: int) -> void:
 	var chars_diff: int = absi(visible_characters - chars)
 	var tween_time: float = _get_tween_time(chars_diff)
 	_refresh_tweener().tween_property(self, ^"visible_characters", chars, tween_time)
-	await _label_tweener.finished
+	await _characters_tweener.finished

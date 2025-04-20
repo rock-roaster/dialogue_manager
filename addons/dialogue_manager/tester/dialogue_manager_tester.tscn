@@ -12,6 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q7776")
 metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
