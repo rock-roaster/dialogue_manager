@@ -1,7 +1,4 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c23cdst71vx2x"]
-
-[ext_resource type="FontFile" uid="uid://cvt7kjbbqm4da" path="res://addons/dialogue_manager/theme/font/source_serif_regular.otf" id="1_wa6ry"]
+[gd_resource type="Theme" format=3 uid="uid://c23cdst71vx2x"]
 
 [resource]
-default_font = ExtResource("1_wa6ry")
 default_font_size = 36
