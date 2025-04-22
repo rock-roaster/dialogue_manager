@@ -24,8 +24,8 @@ func _enable_plugin() -> void:
 ## 在禁用插件时恢复项目配置
 func _disable_plugin() -> void:
 	remove_autoload_singleton(SYSTEM_NAME)
-	_remove_template()
 	_remove_project_settings()
+	_remove_template()
 	ProjectSettings.save()
 
 
@@ -60,25 +60,29 @@ func _remove_setting_dict(info_dict: Dictionary) -> void:
 
 
 func _add_template() -> void:
-	copy_dir("res://addons/dialogue_manager/script_templates/", "res://script_templates/")
+	copy_dir("res://addons/dialogue_manager/script_templates", "res://script_templates")
+	hide_dir("res://script_templates")
 
 
 func _remove_template() -> void:
-	remove_dir("res://script_templates/")
+	remove_dir("res://script_templates")
 
 
 func copy_dir(from: String, to: String) -> void:
+	if not from.ends_with("/"): from += "/"
 	var dir_access: DirAccess = DirAccess.open(from)
 	if dir_access == null: return
 	dir_access.set_include_hidden(true)
+	if not to.ends_with("/"): to += "/"
 	dir_access.make_dir_recursive(to)
 	for file_name in dir_access.get_files():
-		dir_access.copy("%s/%s" % [from, file_name], "%s/%s" % [to, file_name])
+		dir_access.copy(from + file_name, to + file_name)
 	for dir_name in dir_access.get_directories():
 		copy_dir(from + dir_name, to + dir_name)
 
 
 func remove_dir(path: String) -> void:
+	if not path.ends_with("/"): path += "/"
 	var dir_access: DirAccess = DirAccess.open(path)
 	if dir_access == null: return
 	dir_access.set_include_hidden(true)
@@ -87,3 +91,9 @@ func remove_dir(path: String) -> void:
 	for dir_name in dir_access.get_directories():
 		remove_dir(path + dir_name)
 	dir_access.remove(".")
+
+
+func hide_dir(path: String) -> void:
+	if not path.ends_with("/"): path += "/"
+	if not DirAccess.dir_exists_absolute(path): return
+	FileAccess.open(path + ".gdignore", FileAccess.WRITE).store_8(0)
