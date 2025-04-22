@@ -16,9 +16,15 @@ func _enter_tree() -> void:
 	ProjectSettings.save()
 
 
+## 在启用插件时添加脚本模板
+func _enable_plugin() -> void:
+	_add_template()
+
+
 ## 在禁用插件时恢复项目配置
 func _disable_plugin() -> void:
 	remove_autoload_singleton(SYSTEM_NAME)
+	_remove_template()
 	_remove_project_settings()
 	ProjectSettings.save()
 
@@ -51,3 +57,33 @@ func _remove_setting_dict(info_dict: Dictionary) -> void:
 	var setting_name: String = info_dict["name"]
 	if ProjectSettings.has_setting(setting_name):
 		ProjectSettings.set_setting(setting_name, null)
+
+
+func _add_template() -> void:
+	copy_dir("res://addons/dialogue_manager/script_templates/", "res://script_templates/")
+
+
+func _remove_template() -> void:
+	remove_dir("res://script_templates/")
+
+
+func copy_dir(from: String, to: String) -> void:
+	var dir_access: DirAccess = DirAccess.open(from)
+	if dir_access == null: return
+	dir_access.set_include_hidden(true)
+	dir_access.make_dir_recursive(to)
+	for file_name in dir_access.get_files():
+		dir_access.copy("%s/%s" % [from, file_name], "%s/%s" % [to, file_name])
+	for dir_name in dir_access.get_directories():
+		copy_dir(from + dir_name, to + dir_name)
+
+
+func remove_dir(path: String) -> void:
+	var dir_access: DirAccess = DirAccess.open(path)
+	if dir_access == null: return
+	dir_access.set_include_hidden(true)
+	for file_name in dir_access.get_files():
+		dir_access.remove(file_name)
+	for dir_name in dir_access.get_directories():
+		remove_dir(path + dir_name)
+	dir_access.remove(".")

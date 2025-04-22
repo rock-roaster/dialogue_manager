@@ -1,3 +1,5 @@
+# meta-name: Dialogue Script
+# meta-description: Write Dialogue Script for Dialogue Manager.
 extends DialogueScript
 
 
