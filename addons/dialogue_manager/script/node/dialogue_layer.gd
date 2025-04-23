@@ -8,7 +8,7 @@ var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
 var _popup_parent: Node
 var _popup_position: Vector2
-var _popup_direction: DialogueLabelBubble.PopupDirection
+var _popup_direction: int
 
 var _break_tweening: bool
 var _ms_per_char: float
@@ -19,8 +19,8 @@ var _dialogue_manager: Dialogue:
 
 
 func _init() -> void:
-	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width", 1920)
-	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height", 1080)
+	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
 
 	_popup_parent = self
 	_popup_position = Vector2(screen_size_x, screen_size_y) * 0.5
@@ -63,8 +63,7 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 
 func _on_dialogue_line_finished(line: DialogueLine) -> void:
 	if line.get_data("auto_advance"):
-		var line_auto_advance_time: float = line.get_data("auto_time") if\
-			line.has_data("auto_time") else _auto_advance_time
+		var line_auto_advance_time: float = line.get_data("auto_time", _auto_advance_time)
 		line_auto_advance_time = clampf(line_auto_advance_time, 0.0, line_auto_advance_time)
 		await get_tree().create_timer(line_auto_advance_time).timeout
 		_dialogue_manager._finish_line()
@@ -81,37 +80,30 @@ func set_popup_position(position: Vector2) -> void:
 	_popup_position = position
 
 
-func set_popup_direction(direction: DialogueLabelBubble.PopupDirection) -> void:
+func set_popup_direction(direction: int) -> void:
 	_popup_direction = direction
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
-	var line_popup_label: bool = line.get_data("popup_label")\
-		if line.has_data("popup_label") else true
-	var line_position: Vector2 = line.get_data("position")\
-		if line.has_data("position") else _popup_position
-	var line_direction: DialogueLabelBubble.PopupDirection = line.get_data("direction")\
-		if line.has_data("direction") else _popup_direction
-	var line_ms_per_char: float = line.get_data("ms_per_char")\
-		if line.has_data("ms_per_char") else _ms_per_char
-	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled")\
-		if line.has_data("bbcode_enabled") else true
-	var line_pause_between_parts: float = line.get_data("gaps_time")\
-		if line.has_data("gaps_time") else 0.0
-	var line_popup_parent: Node = line.get_data("popup_parent")\
-		if line.has_data("popup_parent") else _popup_parent
+	var line_position: Vector2 = line.get_data("position", _popup_position)
+	var line_direction: int = line.get_data("direction", _popup_direction)
+	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
+	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
+	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
+	var line_popup_label: bool = line.get_data("popup_label", true)
+	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 
 	var new_dialogue_label: DialogueLabel
-	if line_popup_label:
-		new_dialogue_label = DialogueLabelBubble.new(
-			line_position,
-			line_direction,
+	if not line_popup_label:
+		new_dialogue_label = DialogueLabel.new(
 			line_ms_per_char,
 			line_bbcode_enabled,
 			line_pause_between_parts,
 		)
 	else:
-		new_dialogue_label = DialogueLabel.new(
+		new_dialogue_label = DialogueLabelBubble.new(
+			line_position,
+			line_direction,
 			line_ms_per_char,
 			line_bbcode_enabled,
 			line_pause_between_parts,
