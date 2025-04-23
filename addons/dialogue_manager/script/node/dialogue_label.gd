@@ -105,25 +105,28 @@ func skip_tween_part() -> void:
 func show_line_text(line: DialogueLine) -> void:
 	_dialogue_line_tweening = line
 
-	var line_text_array: Array = line.get_text()
-	var temp_text_array: Array = line_text_array.filter(
-		func(value: Variant) -> bool: return value is String)
-	var text_stream: String = "".join(temp_text_array)
-
 	visible_ratio = 0.0
 	scale = Vector2.ZERO
-	set_text(text_stream)
 
-	_tween_process.call_deferred(line_text_array)
+	var line_text_stream: String = line.get_text_stream()
+	set_text(line_text_stream)
+
+	_tween_process.call_deferred(line)
 	await dialogue_line_showed
 
 
-func _tween_process(text_array: Array) -> void:
+func _tween_process(line: DialogueLine) -> void:
 	_refresh_popup_offset()
 	_tween_scale(1.0, 0.2)
 
 	_target_characters = 0
+
+	var text_array: Array = line.get_text()
+	var array_size: int = text_array.size()
+	var part_index: int = 0
+
 	for text_part in text_array:
+		part_index += 1
 		match typeof(text_part):
 			TYPE_CALLABLE:
 				await text_part.call()
@@ -132,6 +135,8 @@ func _tween_process(text_array: Array) -> void:
 			TYPE_STRING, TYPE_STRING_NAME:
 				_target_characters += strip_bbcode(text_part).length()
 				await _tween_characters(_target_characters)
+
+		if part_index == array_size: break
 		await get_tree().create_timer(_pause_between_parts).timeout
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)

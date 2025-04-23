@@ -41,6 +41,14 @@ func get_text() -> Array:
 	return get_data("text", [""])
 
 
+func get_text_stream() -> String:
+	var line_text_array: Array = get_text()
+	var temp_text_array: Array = line_text_array.filter(
+		func(value: Variant) -> bool: return value is String)
+	var text_stream: String = "".join(temp_text_array)
+	return text_stream
+
+
 func get_callable() -> Callable:
 	return get_data("callable", Callable())
 

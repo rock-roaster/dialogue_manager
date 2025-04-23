@@ -4,8 +4,6 @@ class_name DialogueLayer
 
 @export var enable: bool
 
-#var _popup_dialogue_label: DialogueLabel
-
 var _popup_position: Vector2
 var _popup_direction: DialogueLabel.PopupDirection
 
@@ -16,12 +14,14 @@ var _auto_advance_time: float = Dialogue.get_setting_value("auto_advance_time")
 
 
 func _init() -> void:
+	var screen_size_x: int = ProjectSettings.get_setting(
+		"display/window/size/viewport_width", 1920)
+	var screen_size_y: int = ProjectSettings.get_setting(
+		"display/window/size/viewport_height", 1080)
+	_popup_position = Vector2(screen_size_x, screen_size_y) * 0.5
+
 	_popup_direction = DialogueLabel.PopupDirection.NONE
 	Dialogue.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
-
-
-#func _ready() -> void:
-	#_popup_position = get_viewport().size * 0.5
 
 
 func _input(event: InputEvent) -> void:
