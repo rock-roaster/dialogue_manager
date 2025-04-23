@@ -31,10 +31,9 @@ func load_dialogue_script(
 		data: Dictionary[StringName, Variant] = {},
 		) -> void:
 
-	var new_script_resource: GDScript = ResourceLoader.load(path, "GDScript")
-	var new_dialogue_script: DialogueScript = new_script_resource.new(data)
+	var new_dialogue_script: DialogueScript = DialogueScript.get_new_script(path, data)
+	if new_dialogue_script == null: return
 
-	if new_dialogue_script is not DialogueScript: return
 	_dialogue_script_processing = new_dialogue_script
 	_can_push_dialogue_line = true
 	dialogue_script_started.emit(new_dialogue_script)

@@ -66,3 +66,15 @@ func add_script(
 
 func close_label(name: StringName = "", auto_advance: bool = true) -> DialogueLine:
 	return add_text([""], auto_advance).set_name(name).set_auto_time(0.0)
+
+
+static func get_new_script(
+	path: String,
+	data: Dictionary[StringName, Variant] = {},
+	) -> DialogueScript:
+
+	if not ResourceLoader.exists(path, "GDScript"): return
+	var new_script_resource: GDScript = ResourceLoader.load(path, "GDScript")
+	var new_dialogue_script: DialogueScript = new_script_resource.new(data)
+	if not new_dialogue_script is DialogueScript: return
+	return new_dialogue_script

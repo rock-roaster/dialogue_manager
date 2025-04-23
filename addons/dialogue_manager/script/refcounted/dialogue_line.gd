@@ -69,20 +69,26 @@ func set_data_dict(
 func set_name(value: StringName) -> DialogueLine:
 	return set_data("name", value)
 
-func set_bbcode(value: bool) -> DialogueLine:
-	return set_data("bbcode", value)
-
 func set_position(value: Vector2) -> DialogueLine:
 	return set_data("position", value)
 
 func set_direction(value: int) -> DialogueLine:
 	return set_data("direction", value)
 
-func set_gaps_time(value: float) -> DialogueLine:
-	return set_data("gaps_time", value)
-
 func set_ms_per_char(value: float) -> DialogueLine:
 	return set_data("ms_per_char", value)
 
+func set_gaps_time(value: float) -> DialogueLine:
+	return set_data("gaps_time", value)
+
 func set_auto_time(value: float) -> DialogueLine:
 	return set_data("auto_time", value)
+
+func set_bbcode_enabled(value: bool) -> DialogueLine:
+	return set_data("bbcode_enabled", value)
+
+func set_popup_label(value: bool) -> DialogueLine:
+	return set_data("popup_label", value)
+
+func set_popup_parent(value: Node) -> DialogueLine:
+	return set_data("popup_parent", value)

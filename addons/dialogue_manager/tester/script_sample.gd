@@ -12,6 +12,7 @@ func _dialogue_process() -> void:
 	close_label("label_02")
 
 	#add_timer(0.5)
-	add_text("八百标兵奔北坡，北坡炮兵并排跑。\n炮兵怕把标兵碰，标兵怕碰炮兵炮。")
+	add_text("八百标兵奔北坡，北坡炮兵并排跑。\n炮兵怕把标兵碰，标兵怕碰炮兵炮。")\
+		.set_popup_label(false).set_popup_parent(get_data("container"))
 
 	add_script("res://addons/dialogue_manager/tester/script_sample.gd", _dialogue_data)
