@@ -20,8 +20,8 @@ func _init() -> void:
 	Dialogue.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
 
 
-func _ready() -> void:
-	_popup_position = get_viewport().size * 0.5
+#func _ready() -> void:
+	#_popup_position = get_viewport().size * 0.5
 
 
 func _input(event: InputEvent) -> void:

@@ -25,8 +25,8 @@ func _enable_plugin() -> void:
 func _disable_plugin() -> void:
 	remove_autoload_singleton(SYSTEM_NAME)
 	_remove_project_settings()
-	_remove_template()
 	ProjectSettings.save()
+	_remove_template()
 
 
 ## 添加配置脚本中的设置项
