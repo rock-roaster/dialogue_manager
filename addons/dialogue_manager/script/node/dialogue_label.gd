@@ -12,7 +12,8 @@ var _target_characters: int
 var _ms_per_char: float
 var _pause_between_parts: float
 
-var _characters_tweener: Tween
+var _characters_timer: Timer
+
 var _dialogue_line_tweening: DialogueLine
 
 
@@ -22,20 +23,21 @@ func _init(
 	pause_between_parts: float = 0.0,
 	) -> void:
 
-	_setup_richtext_label()
+	clip_contents = false
+	fit_content = true
+	scroll_active = false
+	autowrap_mode = TextServer.AUTOWRAP_OFF
+	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+
 	theme = DIALOGUE_THEME.duplicate()
 	bbcode_enabled = enable_bbcode
 
 	_ms_per_char = clampf(ms_per_char, 0.0, ms_per_char)
 	_pause_between_parts = clampf(pause_between_parts, 0.0, pause_between_parts)
 
-
-func _setup_richtext_label() -> void:
-	clip_contents = false
-	fit_content = true
-	scroll_active = false
-	autowrap_mode = TextServer.AUTOWRAP_OFF
-	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	_characters_timer = Timer.new()
+	_characters_timer.one_shot = true
+	add_child(_characters_timer)
 
 
 ## 移除字符串中的所有 BBCode 标签
@@ -47,17 +49,6 @@ func strip_bbcode(bbcode_text: String) -> String:
 
 	#bbcode_regex.compile("\\[\\/?[a-zA-Z0-9_=\\s\\-\\#\\.\\+\\*\\?]+\\]")
 	#return bbcode_regex.sub(bbcode_text, "", true).replace("\\[", "[").replace("\\]", "]")
-
-
-func is_tweening() -> bool:
-	return _characters_tweener != null && _characters_tweener.is_running()
-
-
-func skip_tween_part() -> void:
-	if not is_tweening(): return
-	_characters_tweener.kill()
-	visible_characters = _target_characters
-	_characters_tweener.finished.emit()
 
 
 func show_line_text(line: DialogueLine) -> void:
@@ -87,7 +78,7 @@ func _line_process(line: DialogueLine) -> void:
 				await get_tree().create_timer(text_part).timeout
 			TYPE_STRING, TYPE_STRING_NAME:
 				_target_characters += strip_bbcode(text_part).length()
-				await _tween_characters(_target_characters)
+				await _visible_characters_process(_target_characters)
 
 		if part_index == array_size: break
 		await get_tree().create_timer(_pause_between_parts).timeout
@@ -96,19 +87,24 @@ func _line_process(line: DialogueLine) -> void:
 	_dialogue_line_tweening = null
 
 
-func _tween_characters(chars: int) -> void:
-	var chars_diff: int = absi(visible_characters - chars)
-	var tween_time: float = _get_tween_time(chars_diff)
-	_refresh_tweener().tween_property(self, ^"visible_characters", chars, tween_time)
-	await _characters_tweener.finished
+func _visible_characters_process(chars: int) -> void:
+	if _ms_per_char <= 0.0:
+		visible_characters = chars
+		return
+
+	var sec_per_char: float = _ms_per_char * 0.001
+	while visible_characters != chars:
+		visible_characters = move_toward(visible_characters, chars, 1.0)
+		if visible_characters == chars: break
+		_characters_timer.start(sec_per_char)
+		await _characters_timer.timeout
 
 
-func _get_tween_time(chars: int) -> float:
-	return chars * _ms_per_char * 0.001
+func visible_characters_processing() -> bool:
+	return not _characters_timer.is_stopped()
 
 
-func _refresh_tweener() -> Tween:
-	if _characters_tweener != null:
-		_characters_tweener.kill()
-	_characters_tweener = create_tween()
-	return _characters_tweener
+func break_visible_characters_process() -> void:
+	visible_characters = _target_characters
+	_characters_timer.stop()
+	_characters_timer.timeout.emit()

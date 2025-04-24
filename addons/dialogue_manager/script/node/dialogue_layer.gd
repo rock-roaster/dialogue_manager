@@ -42,8 +42,9 @@ func _on_accept_pressed() -> void:
 	if not enable: return
 	get_viewport().set_input_as_handled()
 
-	if _processing_label != null && _processing_label.is_tweening():
-		if _break_tweening: _processing_label.skip_tween_part()
+	if _processing_label != null && _processing_label.visible_characters_processing():
+		if _break_tweening:
+			_processing_label.break_visible_characters_process()
 		return
 
 	_dialogue_manager.get_next_line()
