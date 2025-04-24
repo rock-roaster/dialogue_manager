@@ -12,7 +12,7 @@ func _dialogue_process() -> void:
 	close_label("label_02")
 
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"])\
-		.set_popup_parent(get_data("node_01")).set_popup_label(false).set_ms_per_char(50.0)
+		.set_popup_parent(get_data("node_01")).set_label_bubble(false).set_ms_per_char(50.0)
 
 	add_text("八百标兵奔北坡，北坡炮兵并排跑。\n炮兵怕把标兵碰，标兵怕碰炮兵炮。")\
 		.set_popup_parent(get_data("node_02")).set_ms_per_char(0.0)

@@ -82,8 +82,8 @@ func set_auto_time(value: float) -> DialogueLine:
 func set_bbcode_enabled(value: bool) -> DialogueLine:
 	return set_data("bbcode_enabled", value)
 
-func set_popup_label(value: bool) -> DialogueLine:
-	return set_data("popup_label", value)
+func set_label_bubble(value: bool) -> DialogueLine:
+	return set_data("label_bubble", value)
 
 func set_popup_parent(value: Node) -> DialogueLine:
 	return set_data("popup_parent", value)

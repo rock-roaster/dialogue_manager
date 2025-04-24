@@ -94,7 +94,7 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
 	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
-	var line_popup_label: bool = line.get_data("popup_label", true)
+	var line_label_bubble: bool = line.get_data("label_bubble", true)
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 
 	# 此处判断条件可自行修改，以适应弹出对话位置变化
@@ -102,7 +102,7 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 		line_position = Vector2.ZERO
 
 	var new_dialogue_label: DialogueLabel
-	if not line_popup_label:
+	if not line_label_bubble:
 		new_dialogue_label = DialogueLabel.new(
 			line_ms_per_char,
 			line_bbcode_enabled,
