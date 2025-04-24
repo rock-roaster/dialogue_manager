@@ -44,7 +44,7 @@ func get_text() -> Array:
 func get_text_stream() -> String:
 	var line_text_array: Array = get_text()
 	var temp_text_array: Array = line_text_array.filter(
-		func(value: Variant) -> bool: return value is String)
+		func(value: Variant) -> bool: return value is String or value is StringName)
 	var text_stream: String = "".join(temp_text_array)
 	return text_stream
 
@@ -66,6 +66,27 @@ func set_data_dict(
 	return self
 
 
+static func get_text_line(text: Variant, auto_advance: bool = false) -> DialogueLine:
+	var new_line: DialogueLine = DialogueLine.new(0)
+	if text is String or text is StringName: text = [text] as Array
+	new_line.set_data("text", text)
+	new_line.set_data("auto_advance", auto_advance)
+	return new_line
+
+
+static func get_callable_line(
+		callable: Callable,
+		await_call: bool = false,
+		auto_advance: bool = true,
+		) -> DialogueLine:
+	var new_line: DialogueLine = DialogueLine.new(1)
+	new_line.set_data("callable", callable)
+	new_line.set_data("await", await_call)
+	new_line.set_data("auto_advance", auto_advance)
+	return new_line
+
+
+#region set_line_data
 func set_name(value: StringName) -> DialogueLine:
 	return set_data("name", value)
 
@@ -92,3 +113,4 @@ func set_popup_label(value: bool) -> DialogueLine:
 
 func set_popup_parent(value: Node) -> DialogueLine:
 	return set_data("popup_parent", value)
+#endregion

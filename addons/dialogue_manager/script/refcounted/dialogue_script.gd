@@ -29,10 +29,7 @@ func get_next_line() -> DialogueLine:
 
 
 func add_text(text: Variant, auto_advance: bool = false) -> DialogueLine:
-	var new_line: DialogueLine = DialogueLine.new(0)
-	if text is String or text is StringName: text = [text] as Array
-	new_line.set_data("text", text)
-	new_line.set_data("auto_advance", auto_advance)
+	var new_line: DialogueLine = DialogueLine.get_text_line(text, auto_advance)
 	_dialogue_lines.append(new_line)
 	return new_line
 
@@ -42,10 +39,7 @@ func add_callable(
 		await_call: bool = false,
 		auto_advance: bool = true,
 		) -> DialogueLine:
-	var new_line: DialogueLine = DialogueLine.new(1)
-	new_line.set_data("callable", callable)
-	new_line.set_data("await", await_call)
-	new_line.set_data("auto_advance", auto_advance)
+	var new_line: DialogueLine = DialogueLine.get_callable_line(callable, await_call, auto_advance)
 	_dialogue_lines.append(new_line)
 	return new_line
 
@@ -69,10 +63,9 @@ func close_label(name: StringName = "", auto_advance: bool = true) -> DialogueLi
 
 
 static func get_new_script(
-	path: String,
-	data: Dictionary[StringName, Variant] = {},
-	) -> DialogueScript:
-
+		path: String,
+		data: Dictionary[StringName, Variant] = {},
+		) -> DialogueScript:
 	if not ResourceLoader.exists(path, "GDScript"): return
 	var new_script_resource: GDScript = ResourceLoader.load(path, "GDScript")
 	var new_dialogue_script: DialogueScript = new_script_resource.new(data)

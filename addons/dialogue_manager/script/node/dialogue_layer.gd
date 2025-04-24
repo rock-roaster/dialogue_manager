@@ -4,6 +4,7 @@ class_name DialogueLayer
 
 @export var enable: bool
 
+var _processing_label: DialogueLabel
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
 var _popup_parent: Node
@@ -41,9 +42,8 @@ func _on_accept_pressed() -> void:
 	if not enable: return
 	get_viewport().set_input_as_handled()
 
-	var current_label: DialogueLabel = _dialogue_labels.get("")
-	if current_label != null && current_label.is_tweening():
-		if _break_tweening: current_label.skip_tween_part()
+	if _processing_label != null && _processing_label.is_tweening():
+		if _break_tweening: _processing_label.skip_tween_part()
 		return
 
 	_dialogue_manager.get_next_line()
@@ -56,7 +56,9 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 
 	if line.get_text() != [""]:
 		var new_dialogue_label: DialogueLabel = popup_dialogue_label(line, label_name)
+		_processing_label = new_dialogue_label
 		await new_dialogue_label.show_line_text(line)
+		_processing_label = null
 
 	_on_dialogue_line_finished(line)
 
