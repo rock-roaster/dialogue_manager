@@ -27,7 +27,7 @@ offset_bottom = 42.0
 grow_horizontal = 2
 text = "Press Accept to Activate."
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5

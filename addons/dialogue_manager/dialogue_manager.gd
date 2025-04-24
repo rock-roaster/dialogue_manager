@@ -96,8 +96,8 @@ func _add_history_line(line: DialogueLine) -> void:
 
 func _dialogue_line_process_callable(line: DialogueLine) -> void:
 	var line_callable: Callable = line.get_callable()
-	var line_await: bool = line.get_data("await")
-	var line_auto_advance: bool = line.get_data("auto_advance")
+	var line_await: bool = line.get_data("await", false)
+	var line_auto_advance: bool = line.get_data("auto_advance", true)
 
 	if line_callable.is_valid():
 		if line_await:

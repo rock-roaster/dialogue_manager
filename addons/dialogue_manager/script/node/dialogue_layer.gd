@@ -64,10 +64,11 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 
 
 func _on_dialogue_line_finished(line: DialogueLine) -> void:
-	if line.get_data("auto_advance"):
+	if line.get_data("auto_advance", false):
 		var line_auto_advance_time: float = line.get_data("auto_time", _auto_advance_time)
 		line_auto_advance_time = clampf(line_auto_advance_time, 0.0, line_auto_advance_time)
 		await get_tree().create_timer(line_auto_advance_time).timeout
+
 		_dialogue_manager._finish_line()
 		_dialogue_manager.get_next_line()
 	else:
@@ -94,6 +95,9 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
 	var line_popup_label: bool = line.get_data("popup_label", true)
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
+
+	if line_popup_parent is CanvasItem:
+		line_position = Vector2.ZERO
 
 	var new_dialogue_label: DialogueLabel
 	if not line_popup_label:
