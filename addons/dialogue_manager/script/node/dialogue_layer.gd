@@ -96,7 +96,8 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_popup_label: bool = line.get_data("popup_label", true)
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 
-	if line_popup_parent is CanvasItem:
+	# 此处判断条件可自行修改，以适应弹出对话位置变化
+	if line_popup_parent.get("position") != null:
 		line_position = Vector2.ZERO
 
 	var new_dialogue_label: DialogueLabel
