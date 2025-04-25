@@ -7,25 +7,26 @@ class_name DialogueLayer
 var _processing_label: DialogueLabel
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
-var _popup_parent: Node
 var _popup_position: Vector2
 var _popup_direction: int
+var _popup_parent: Node
+var _use_label_bubble: bool
 
 var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
 
-var _dialogue_manager: Dialogue:
-	get: return Dialogue
+var _dialogue_manager: Dialogue = Dialogue
 
 
 func _init() -> void:
 	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
 	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
 
-	_popup_parent = self
 	_popup_position = Vector2(screen_size_x, screen_size_y) * 0.5
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
+	_popup_parent = self
+	_use_label_bubble = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
 	_ms_per_char = _dialogue_manager.get_setting_value("msec_per_character")
@@ -76,16 +77,20 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager._finish_line()
 
 
-func set_popup_parent(node: Node) -> void:
-	_popup_parent = node
+func set_popup_parent(value: Node) -> void:
+	_popup_parent = value
 
 
-func set_popup_position(position: Vector2) -> void:
-	_popup_position = position
+func set_popup_position(value: Vector2) -> void:
+	_popup_position = value
 
 
-func set_popup_direction(direction: int) -> void:
-	_popup_direction = direction
+func set_popup_direction(value: int) -> void:
+	_popup_direction = value
+
+
+func set_use_label_bubble(value: bool) -> void:
+	_use_label_bubble = value
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
@@ -94,8 +99,8 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
 	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
-	var line_label_bubble: bool = line.get_data("label_bubble", true)
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
+	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 
 	# 此处判断条件可自行修改，以适应弹出对话位置变化
 	if line_popup_parent.get("position") != null:

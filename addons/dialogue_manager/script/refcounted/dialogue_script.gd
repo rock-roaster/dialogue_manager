@@ -4,6 +4,7 @@ class_name DialogueScript
 
 var _dialogue_data: Dictionary[StringName, Variant]
 var _dialogue_lines: Array[DialogueLine]
+var _dialogue_manager: Dialogue = Dialogue
 
 
 func _init(data: Dictionary[StringName, Variant] = {}) -> void:
@@ -46,7 +47,7 @@ func add_callable(
 
 func add_timer(wait_time: float) -> DialogueLine:
 	var callable: Callable = func():
-		await Dialogue.get_tree().create_timer(wait_time).timeout
+		await _dialogue_manager.get_tree().create_timer(wait_time).timeout
 	return add_callable(callable, true, true)
 
 
@@ -54,7 +55,7 @@ func add_script(
 		path: String,
 		data: Dictionary[StringName, Variant] = {},
 		) -> DialogueLine:
-	var callable: Callable = Dialogue.load_dialogue_script.bind(path, data)
+	var callable: Callable = _dialogue_manager.load_dialogue_script.bind(path, data)
 	return add_callable(callable, false, true)
 
 
