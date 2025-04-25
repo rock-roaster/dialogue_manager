@@ -2,6 +2,8 @@ extends CanvasLayer
 class_name DialogueLayer
 
 
+signal dialogue_label_popup (label: DialogueLabel)
+
 @export var enable: bool
 
 var _processing_label: DialogueLabel
@@ -59,6 +61,7 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 	if line.get_text() != [""]:
 		var new_dialogue_label: DialogueLabel = popup_dialogue_label(line, label_name)
 		_processing_label = new_dialogue_label
+		dialogue_label_popup.emit(new_dialogue_label)
 		await new_dialogue_label.show_line_text(line)
 		_processing_label = null
 

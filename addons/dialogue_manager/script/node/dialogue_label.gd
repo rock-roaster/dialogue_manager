@@ -4,6 +4,8 @@ class_name DialogueLabel
 
 
 signal dialogue_line_showed (line: DialogueLine)
+signal character_process_started
+signal character_process_finished
 
 const DIALOGUE_THEME: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
 
@@ -92,12 +94,14 @@ func _visible_characters_process(chars: int) -> void:
 		visible_characters = chars
 		return
 
+	character_process_started.emit()
 	var sec_per_char: float = _ms_per_char * 0.001
 	while visible_characters != chars:
 		visible_characters = move_toward(visible_characters, chars, 1.0)
 		if visible_characters == chars: break
 		_characters_timer.start(sec_per_char)
 		await _characters_timer.timeout
+	character_process_finished.emit()
 
 
 func visible_characters_processing() -> bool:
@@ -105,6 +109,7 @@ func visible_characters_processing() -> bool:
 
 
 func break_visible_characters_process() -> void:
+	if _characters_timer.is_stopped(): return
 	visible_characters = _target_characters
 	_characters_timer.stop()
 	_characters_timer.timeout.emit()
