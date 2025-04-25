@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbku573e043aa"]
+
+[ext_resource type="Script" uid="uid://dgvra4vut8alw" path="res://addons/dialogue_manager/script/character/character.gd" id="1_vtu5g"]
+[ext_resource type="AudioStream" uid="uid://dyxs1decvr027" path="res://addons/dialogue_manager/script/character/speaking.wav" id="2_qao2o"]
+
+[node name="Character" type="Control"]
+layout_mode = 3
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 144.0
+grow_horizontal = 2
+script = ExtResource("1_vtu5g")
+
+[node name="TimerBlink" type="Timer" parent="."]
+one_shot = true
+
+[node name="TimerSpeak" type="Timer" parent="."]
+one_shot = true
+
+[node name="Audio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_qao2o")
+
+[node name="Texture" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="Body" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Face" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Mouth" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Eyes" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Brows" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
+
+[node name="Addons" type="TextureRect" parent="Texture"]
+layout_mode = 2
+mouse_filter = 2
+stretch_mode = 5
