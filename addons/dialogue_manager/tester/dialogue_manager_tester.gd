@@ -18,7 +18,6 @@ func _ready() -> void:
 			"node_01": $Character1/Control,
 			"node_02": $Character2/Control,
 			"node_03": $Panel,
-			"node_04": $Control,
 			"call_01": set_speaking_character,
 		}
 	)
