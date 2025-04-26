@@ -8,7 +8,7 @@ extends Control
 func _ready() -> void:
 	dialogue_layer.dialogue_label_popup.connect(_on_label_popup)
 	Dialogue.load_dialogue_script(
-		"res://addons/dialogue_manager/tester/script_sample.gd",
+		"res://addons/dialogue_manager/tester/sample_script.gd",
 		{
 			"node_01": $Panel,
 			"node_02": $Control,

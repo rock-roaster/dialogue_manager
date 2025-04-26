@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=9 format=3 uid="uid://behi7vrf5huio"]
+
+[ext_resource type="Texture2D" uid="uid://bmu8tf8scl500" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/其他/身体.png" id="1_mej6t"]
+[ext_resource type="Texture2D" uid="uid://bse5ijuh4vl6u" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/眼睛/眨眼.png" id="2_udhac"]
+[ext_resource type="Texture2D" uid="uid://dvan8cy1hxsmo" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/眼睛/笑意.png" id="3_fmpwe"]
+[ext_resource type="Texture2D" uid="uid://dltmqecnhlna4" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/眼睛/闭眼.png" id="4_k6t6g"]
+[ext_resource type="Texture2D" uid="uid://b21g3asvatbwr" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/嘴巴/说话.png" id="5_y0j75"]
+[ext_resource type="Texture2D" uid="uid://dhi7111baw5cq" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/嘴巴/张嘴.png" id="6_4oj0x"]
+[ext_resource type="Texture2D" uid="uid://6khlqtl6p4dy" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/嘴巴/笑容.png" id="7_0b71x"]
+[ext_resource type="Script" uid="uid://bph84ndu6y33y" path="res://addons/dialogue_manager/script/character/character_data.gd" id="8_q4255"]
+
+[resource]
+script = ExtResource("8_q4255")
+character_dir = "res://addons/dialogue_manager/tester/sample_character/小恶魔"
+body_texture = ExtResource("1_mej6t")
+voice_pitch = 1.0
+eyes_blink = ExtResource("2_udhac")
+eyes_close = Array[CompressedTexture2D]([ExtResource("3_fmpwe"), ExtResource("4_k6t6g")])
+mouth_connect = ExtResource("5_y0j75")
+mouth_speaking = Array[CompressedTexture2D]([ExtResource("6_4oj0x"), ExtResource("7_0b71x")])
