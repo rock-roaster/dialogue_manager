@@ -3,6 +3,7 @@ class_name Character
 
 
 const EXPRESSION_JSON_PATH: String = "res://addons/dialogue_manager/script/character/character_expression.json"
+const SPEAK_AUDIO_STREAM: AudioStream = preload("res://addons/dialogue_manager/script/character/speaking.wav")
 
 @export var character_data: CharacterData
 @export var can_blink: bool = true
@@ -28,19 +29,13 @@ var _thread_expression: SingleThread = SingleThread.new(true)
 
 var _expression_dict: Dictionary
 
-@onready var timer_blink: Timer = $TimerBlink
-@onready var timer_speak: Timer = $TimerSpeak
-@onready var audio_player: AudioStreamPlayer = $Audio
-@onready var texture_container: MarginContainer = $Texture
+var _timer_blink: Timer
+var _timer_speak: Timer
+var _audio_player: AudioStreamPlayer
+var _texture_container: MarginContainer
 
-@onready var _texture_rect_dict: Dictionary[StringName, TextureRect] = {
-	"body": $Texture/Body,
-	"face": $Texture/Face,
-	"mouth": $Texture/Mouth,
-	"eyes": $Texture/Eyes,
-	"brows": $Texture/Brows,
-	"addons": $Texture/Addons,
-}
+var _texture_rect_dict: Dictionary[StringName, TextureRect] = {
+	"body": null, "face": null, "mouth": null, "eyes": null, "brows": null, "addons": null}
 
 
 func _init(
@@ -60,6 +55,37 @@ func _init(
 	body_alpha = _body_alpha
 	brightness = _brightness
 
+	set_node_structure()
+
+
+func set_node_structure() -> void:
+	var sample_timer: Timer = Timer.new()
+	sample_timer.one_shot = true
+	_timer_blink = sample_timer.duplicate()
+	_timer_speak = sample_timer.duplicate()
+	add_child(_timer_blink)
+	add_child(_timer_speak)
+	sample_timer.queue_free()
+
+	_audio_player = AudioStreamPlayer.new()
+	_audio_player.stream = SPEAK_AUDIO_STREAM
+	add_child(_audio_player)
+
+	_texture_container = MarginContainer.new()
+	_texture_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_texture_container.grow_vertical = Control.GROW_DIRECTION_END
+	_texture_container.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	add_child(_texture_container)
+
+	var sample_texture_rect: TextureRect = TextureRect.new()
+	sample_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sample_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for key_name in _texture_rect_dict:
+		var texture_duplicate: TextureRect = sample_texture_rect.duplicate()
+		_texture_rect_dict[key_name] = texture_duplicate
+		_texture_container.add_child(texture_duplicate)
+	sample_texture_rect.queue_free()
+
 
 func load_json(path: String) -> Dictionary:
 	var json_file: FileAccess = FileAccess.open(path, FileAccess.READ)
@@ -69,16 +95,16 @@ func load_json(path: String) -> Dictionary:
 
 func _ready() -> void:
 	set_default_position(position)
-	timer_blink.timeout.connect(on_timer_blink_timeout)
-	texture_container.modulate.a = body_alpha
-	texture_container.modulate.v = brightness
+	_timer_blink.timeout.connect(on_timer_blink_timeout)
+	_texture_container.modulate.a = body_alpha
+	_texture_container.modulate.v = brightness
 	set_character_data(character_data)
 
 
 func set_character_data(char_data: CharacterData) -> void:
 	if !char_data: return
 	character_data = char_data
-	audio_player.set_pitch_scale(char_data.voice_pitch)
+	_audio_player.set_pitch_scale(char_data.voice_pitch)
 	_texture_rect_dict["body"].set_texture(char_data.body_texture)
 	change_expression(expression)
 
@@ -101,7 +127,7 @@ func start_blink_timer() -> void:
 	if _texture_eyes in character_data.eyes_close: return
 	var blink_time: float = randf_range(3.0, 6.0)
 	_blink_twice = blink_time > 5.0
-	timer_blink.start(blink_time)
+	_timer_blink.start(blink_time)
 
 
 func on_timer_blink_timeout() -> void:
@@ -143,9 +169,9 @@ func speaking_loop() -> void:
 
 func speaking_single(texture: CompressedTexture2D) -> void:
 	_texture_rect_dict["mouth"].set_texture(texture)
-	audio_player.play()
-	timer_speak.start(_speak_time)
-	await timer_speak.timeout
+	_audio_player.play()
+	_timer_speak.start(_speak_time)
+	await _timer_speak.timeout
 
 
 func change_position(value: Vector2, time: float = 0.25) -> void:
@@ -158,14 +184,14 @@ func change_position(value: Vector2, time: float = 0.25) -> void:
 
 func change_body_alpha(value: float, time: float = 0.25) -> void:
 	var tween_body_alpha: Tween = create_tween()
-	tween_body_alpha.tween_property(texture_container, ^"modulate:a", value, time)
+	tween_body_alpha.tween_property(_texture_container, ^"modulate:a", value, time)
 	await tween_body_alpha.finished
 
 
 func change_brightness(value: float, time: float = 0.25) -> void:
 	var tween_brightness: Tween = create_tween()
 	tween_brightness.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	tween_brightness.tween_property(texture_container, ^"modulate:v", value, time)
+	tween_brightness.tween_property(_texture_container, ^"modulate:v", value, time)
 	await tween_brightness.finished
 
 
@@ -193,7 +219,7 @@ func change_eyes(file_name: String) -> void:
 	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
 	_texture_eyes = texture2d
 	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
-	if timer_blink.is_stopped(): start_blink_timer()
+	if _timer_blink.is_stopped(): start_blink_timer()
 
 
 func change_mouth(file_name: String) -> void:

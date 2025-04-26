@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
-[ext_resource type="PackedScene" uid="uid://cbku573e043aa" path="res://addons/dialogue_manager/script/character/character.tscn" id="3_o2h6j"]
+[ext_resource type="Script" uid="uid://dgvra4vut8alw" path="res://addons/dialogue_manager/script/character/character.gd" id="3_o2h6j"]
 [ext_resource type="Resource" uid="uid://behi7vrf5huio" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/小恶魔.tres" id="4_fwjtd"]
 [ext_resource type="Resource" uid="uid://dup26r64kmrds" path="res://addons/dialogue_manager/tester/sample_character/帕秋莉/帕秋莉.tres" id="5_o2h6j"]
 
@@ -34,11 +34,17 @@ offset_bottom = 70.0
 grow_horizontal = 2
 text = "Press Accept to Activate."
 
-[node name="Character1" parent="." instance=ExtResource("3_o2h6j")]
+[node name="Character1" type="Control" parent="."]
 layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = -480.0
+offset_top = 144.0
 offset_right = -480.0
 offset_bottom = 144.0
+grow_horizontal = 2
+script = ExtResource("3_o2h6j")
 character_data = ExtResource("5_o2h6j")
 body_alpha = 0.0
 brightness = 0.5
@@ -50,11 +56,17 @@ offset_top = 348.0
 offset_right = 240.0
 offset_bottom = 348.0
 
-[node name="Character2" parent="." instance=ExtResource("3_o2h6j")]
+[node name="Character2" type="Control" parent="."]
 layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
 offset_left = 480.0
+offset_top = 144.0
 offset_right = 480.0
 offset_bottom = 144.0
+grow_horizontal = 2
+script = ExtResource("3_o2h6j")
 character_data = ExtResource("4_fwjtd")
 body_alpha = 0.0
 brightness = 0.5
