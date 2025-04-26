@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cllngis8un7i2"]
+[gd_scene load_steps=6 format=3 uid="uid://cllngis8un7i2"]
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
+[ext_resource type="PackedScene" uid="uid://cbku573e043aa" path="res://addons/dialogue_manager/script/character/character.tscn" id="3_o2h6j"]
+[ext_resource type="Resource" uid="uid://behi7vrf5huio" path="res://addons/dialogue_manager/tester/character/小恶魔/小恶魔.tres" id="4_fwjtd"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7um8w"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7cdp7"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -20,16 +22,25 @@ metadata/_edit_group_ = true
 script = ExtResource("3_kq6wo")
 enable = true
 
-[node name="Label" type="Label" parent="."]
+[node name="Character" parent="." instance=ExtResource("3_o2h6j")]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -177.0
-offset_right = 177.0
-offset_bottom = 42.0
-grow_horizontal = 2
-text = "Press Accept to Activate."
+offset_bottom = 144.0
+character_data = ExtResource("4_fwjtd")
+body_alpha = 0.0
+
+[node name="Control" type="Control" parent="Character"]
+anchors_preset = 0
+offset_left = -240.0
+offset_top = 468.0
+offset_right = -240.0
+offset_bottom = 468.0
+
+[node name="Control2" type="Control" parent="Character"]
+anchors_preset = 0
+offset_left = 240.0
+offset_top = 468.0
+offset_right = 240.0
+offset_bottom = 468.0
 
 [node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -40,7 +51,7 @@ anchor_right = 0.5
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_7um8w")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7cdp7")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1

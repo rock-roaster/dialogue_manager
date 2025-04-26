@@ -22,10 +22,7 @@ var _dialogue_manager: Dialogue = Dialogue
 
 
 func _init() -> void:
-	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
-	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
-
-	_popup_position = Vector2(screen_size_x, screen_size_y) * 0.5
+	_popup_position = get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
 	_popup_parent = self
 	_use_label_bubble = true
@@ -82,6 +79,8 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 
 func set_popup_parent(value: Node) -> void:
 	_popup_parent = value
+	if value == self:
+		_popup_position = get_screen_center()
 
 
 func set_popup_position(value: Vector2) -> void:
@@ -96,6 +95,12 @@ func set_use_label_bubble(value: bool) -> void:
 	_use_label_bubble = value
 
 
+func get_screen_center() -> Vector2:
+	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
+	return Vector2(screen_size_x, screen_size_y) * 0.5
+
+
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
 	var line_position: Vector2 = line.get_data("position", _popup_position)
 	var line_direction: int = line.get_data("direction", _popup_direction)
@@ -106,8 +111,9 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 
 	# 此处判断条件可自行修改，以适应弹出对话位置变化
-	if line_popup_parent.get("position") != null:
-		line_position = Vector2.ZERO
+	if line.has_data("popup_parent") or _popup_parent != self:
+		if not line.has_data("position"):
+			line_position = Vector2.ZERO
 
 	var new_dialogue_label: DialogueLabel
 	if not line_label_bubble:

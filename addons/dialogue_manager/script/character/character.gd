@@ -12,6 +12,8 @@ const EXPRESSION_JSON_PATH: String = "res://addons/dialogue_manager/script/chara
 @export_range(0.0, 1.0, 0.1) var body_alpha: float = 1.0
 @export_range(0.0, 1.0, 0.1) var brightness: float = 1.0
 
+var _default_position: Vector2
+
 var _blink_twice: bool
 var _speak_time: float
 var _is_speaking: bool
@@ -66,6 +68,7 @@ func load_json(path: String) -> Dictionary:
 
 
 func _ready() -> void:
+	set_default_position(position)
 	timer_blink.timeout.connect(on_timer_blink_timeout)
 	modulate.a = body_alpha
 	modulate.v = brightness
@@ -80,17 +83,25 @@ func set_character_data(char_data: CharacterData) -> void:
 	change_expression(expression)
 
 
+func set_default_position(value: Vector2) -> void:
+	_default_position = value
+
+
+func set_speaking_label(label: DialogueLabel) -> void:
+	if _speaking_dialogue_label != null:
+		_speaking_dialogue_label.character_process_started.disconnect(start_speaking)
+		_speaking_dialogue_label.character_process_finished.disconnect(stop_speaking)
+
+	_speaking_dialogue_label = label
+	_speaking_dialogue_label.character_process_started.connect(start_speaking.bind(label._ms_per_char * 0.004))
+	_speaking_dialogue_label.character_process_finished.connect(stop_speaking)
+
+
 func start_blink_timer() -> void:
 	if _texture_eyes in character_data.eyes_close: return
 	var blink_time: float = randf_range(3.0, 6.0)
 	_blink_twice = blink_time > 5.0
 	timer_blink.start(blink_time)
-
-
-func blink_once() -> void:
-	_texture_rect_dict["eyes"].set_texture(character_data.eyes_blink)
-	await get_tree().create_timer(0.1).timeout
-	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
 
 
 func on_timer_blink_timeout() -> void:
@@ -103,14 +114,10 @@ func on_timer_blink_timeout() -> void:
 	start_blink_timer()
 
 
-func set_speaking_label(label: DialogueLabel) -> void:
-	if _speaking_dialogue_label != null:
-		_speaking_dialogue_label.character_process_started.disconnect(start_speaking)
-		_speaking_dialogue_label.character_process_finished.disconnect(stop_speaking)
-
-	_speaking_dialogue_label = label
-	_speaking_dialogue_label.character_process_started.connect(start_speaking.bind(label._ms_per_char * 0.004))
-	_speaking_dialogue_label.character_process_finished.connect(stop_speaking)
+func blink_once() -> void:
+	_texture_rect_dict["eyes"].set_texture(character_data.eyes_blink)
+	await get_tree().create_timer(0.1).timeout
+	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
 
 
 func start_speaking(sec_per_speak: float = _speak_time) -> void:
@@ -124,21 +131,29 @@ func stop_speaking() -> void:
 	_is_speaking = false
 
 
-func speaking_single(texture: CompressedTexture2D, pause_time: float) -> void:
+func speaking_loop() -> void:
+	while _is_speaking:
+		await speaking_single(character_data.mouth_connect)
+		if !_is_speaking: break
+		await speaking_single(character_data.mouth_speaking.pick_random())
+		if !_is_speaking: break
+		await speaking_single(_texture_mouth)
+	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
+
+
+func speaking_single(texture: CompressedTexture2D) -> void:
 	_texture_rect_dict["mouth"].set_texture(texture)
 	audio_player.play()
-	timer_speak.start(pause_time)
+	timer_speak.start(_speak_time)
 	await timer_speak.timeout
 
 
-func speaking_loop() -> void:
-	while _is_speaking:
-		await speaking_single(character_data.mouth_connect, _speak_time)
-		if !_is_speaking: break
-		await speaking_single(character_data.mouth_speaking.pick_random(), _speak_time)
-		if !_is_speaking: break
-		await speaking_single(_texture_mouth, _speak_time)
-	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
+func change_position(value: Vector2, time: float = 0.25) -> void:
+	var final_position: Vector2 = _default_position + value
+	var tween_position: Tween = create_tween()
+	tween_position.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	tween_position.tween_property(self, ^"position", final_position, time)
+	await tween_position.finished
 
 
 func change_body_alpha(value: float, time: float = 0.25) -> void:
@@ -147,19 +162,24 @@ func change_body_alpha(value: float, time: float = 0.25) -> void:
 	await tween_body_alpha.finished
 
 
-func change_brightness(value: float = 1.0, time: float = 0.25) -> void:
+func change_brightness(value: float, time: float = 0.25) -> void:
 	var tween_brightness: Tween = create_tween()
 	tween_brightness.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 	tween_brightness.tween_property(self, ^"modulate:v", value, time)
 	await tween_brightness.finished
 
 
-func change_position(value: Vector2 = Vector2.ZERO, time: float = 0.25) -> void:
-	var final_position: Vector2 = Vector2(-texture_container.size.x, 0.0) * 0.5 + value
-	var tween_position: Tween = create_tween()
-	tween_position.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	tween_position.tween_property(texture_container, ^"position", final_position, time)
-	await tween_position.finished
+func change_expression(exp_name: String) -> void:
+	if !_expression_dict.has(exp_name): return
+	_thread_expression.add_task(change_expression_thread.bind(exp_name))
+
+
+func change_expression_thread(exp_name: String) -> void:
+	var string_array: Array = _expression_dict[exp_name]
+	expression = exp_name
+	change_brows(string_array[0] as String)
+	change_eyes(string_array[1] as String)
+	change_mouth(string_array[2] as String)
 
 
 func change_brows(file_name: String) -> void:
@@ -195,16 +215,3 @@ func change_addons(file_name: String = "") -> void:
 	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["addons"].set_texture(texture2d)
-
-
-func change_expression(exp_name: String) -> void:
-	if !_expression_dict.has(exp_name): return
-	_thread_expression.add_task(change_expression_thread.bind(exp_name))
-
-
-func change_expression_thread(exp_name: String) -> void:
-	var string_array: Array = _expression_dict[exp_name]
-	expression = exp_name
-	change_brows(string_array[0] as String)
-	change_eyes(string_array[1] as String)
-	change_mouth(string_array[2] as String)
