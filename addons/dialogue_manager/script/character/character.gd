@@ -70,8 +70,8 @@ func load_json(path: String) -> Dictionary:
 func _ready() -> void:
 	set_default_position(position)
 	timer_blink.timeout.connect(on_timer_blink_timeout)
-	modulate.a = body_alpha
-	modulate.v = brightness
+	texture_container.modulate.a = body_alpha
+	texture_container.modulate.v = brightness
 	set_character_data(character_data)
 
 
@@ -158,14 +158,14 @@ func change_position(value: Vector2, time: float = 0.25) -> void:
 
 func change_body_alpha(value: float, time: float = 0.25) -> void:
 	var tween_body_alpha: Tween = create_tween()
-	tween_body_alpha.tween_property(self, ^"modulate:a", value, time)
+	tween_body_alpha.tween_property(texture_container, ^"modulate:a", value, time)
 	await tween_body_alpha.finished
 
 
 func change_brightness(value: float, time: float = 0.25) -> void:
 	var tween_brightness: Tween = create_tween()
 	tween_brightness.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
-	tween_brightness.tween_property(self, ^"modulate:v", value, time)
+	tween_brightness.tween_property(texture_container, ^"modulate:v", value, time)
 	await tween_brightness.finished
 
 
