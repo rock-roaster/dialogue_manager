@@ -2,8 +2,6 @@ extends CanvasLayer
 class_name DialogueLayer
 
 
-signal dialogue_label_popup (label: DialogueLabel)
-
 @export var enable: bool
 
 var _processing_label: DialogueLabel
@@ -34,7 +32,6 @@ func _init() -> void:
 	_auto_advance_time = _dialogue_manager.get_setting_value("auto_advance_time")
 
 	_dialogue_manager.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
-	dialogue_label_popup.connect(_on_dialogue_label_popup)
 
 
 func _input(event: InputEvent) -> void:
@@ -61,11 +58,16 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 	if line.get_text() != [""]:
 		var new_dialogue_label: DialogueLabel = popup_dialogue_label(line, label_name)
 		_processing_label = new_dialogue_label
-		dialogue_label_popup.emit(new_dialogue_label)
+		_on_dialogue_label_popup(new_dialogue_label)
 		await new_dialogue_label.show_line_text(line)
 		_processing_label = null
 
 	_on_dialogue_line_finished(line)
+
+
+func _on_dialogue_label_popup(label: DialogueLabel) -> void:
+	if _speaking_character == null: return
+	_speaking_character.set_speaking_label(label)
 
 
 func _on_dialogue_line_finished(line: DialogueLine) -> void:
@@ -78,11 +80,6 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager.get_next_line()
 	else:
 		_dialogue_manager._finish_line()
-
-
-func _on_dialogue_label_popup(label: DialogueLabel) -> void:
-	if _speaking_character == null: return
-	_speaking_character.set_speaking_label(label)
 
 
 func get_screen_center() -> Vector2:
@@ -113,18 +110,20 @@ func set_speaking_character(value: Character, auto_switch_point: bool = false) -
 	if _speaking_character == value: return
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
-		_speaking_character.speak_started.disconnect(_speaking_character.change_brightness)
-	if value != null:
-		value.speak_started.connect(value.change_brightness.bind(1.0))
+		_speaking_character.change_position(Vector2.ZERO)
+
+	_speaking_character = value
+
+	if _speaking_character != null:
+		_speaking_character.change_brightness(1.0)
+		_speaking_character.change_position(Vector2(0.0, -24.0))
 
 	# 自动切换至角色指定弹出节点
 	if auto_switch_point:
-		if value != null && value.popup_point != null:
-			set_popup_parent(value.popup_point)
+		if _speaking_character != null && _speaking_character.popup_point != null:
+			set_popup_parent(_speaking_character.popup_point)
 		else:
 			set_popup_parent(null)
-
-	_speaking_character = value
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:

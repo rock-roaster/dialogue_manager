@@ -20,22 +20,19 @@ func _dialogue_process() -> void:
 		.set_gaps_time(0.25).set_name("label_01")
 	close_label("label_01")
 
-	add_callable(set_speaking_character.bind(char_01, true))
-
 	add_callable(char_01.change_expression.bind("坏笑"))
+	add_callable(set_speaking_character.bind(char_01, true))
 	add_text(["[shake]八百标兵奔北坡，[/shake]", 0.25, "\n北坡炮兵并排跑。"]).set_direction(2)
-
-	add_callable(set_speaking_character.bind(char_02, true))
 
 	add_callable(char_01.change_expression.bind("普通"))
 	add_callable(char_02.change_expression.bind("坏笑"))
+	add_callable(set_speaking_character.bind(char_02, true))
 	add_text(["[wave]炮兵怕把标兵碰，[/wave]", "\n标兵怕碰炮兵炮。"]).set_direction(1)\
 		.set_gaps_time(0.25).set_name("label_02")
-	add_callable(char_02.change_expression.bind("普通"))
 	close_label("label_02")
 
+	add_callable(char_02.change_expression.bind("普通"))
 	add_callable(set_speaking_character.bind(null, true))
-
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"])\
 		.set_popup_parent(push_point_03).set_label_bubble(false).set_ms_per_char(10.0)
 

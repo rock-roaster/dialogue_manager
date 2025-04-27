@@ -2,8 +2,6 @@ extends Control
 class_name Character
 
 
-signal speak_started
-
 const EXPRESSION_JSON_PATH: String = "res://addons/dialogue_manager/script/character/character_expression.json"
 const SPEAK_AUDIO_STREAM: AudioStream = preload("res://addons/dialogue_manager/script/character/speaking.wav")
 
@@ -153,7 +151,6 @@ func start_speaking(sec_per_speak: float = _speak_time) -> void:
 	_speak_time = sec_per_speak
 	_is_speaking = true
 	_thread_speaking.add_task(speaking_loop)
-	speak_started.emit()
 
 
 func stop_speaking() -> void:
