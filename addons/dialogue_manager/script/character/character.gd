@@ -182,6 +182,14 @@ func change_position(value: Vector2, time: float = 0.25) -> void:
 	await tween_position.finished
 
 
+func change_texture_offset(value: Vector2, time: float = 0.25) -> void:
+	var final_position: Vector2 = Vector2(_texture_container.size.x * -0.5, 0.0) + value
+	var tween_position: Tween = create_tween()
+	tween_position.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	tween_position.tween_property(_texture_container, ^"position", final_position, time)
+	await tween_position.finished
+
+
 func change_body_alpha(value: float, time: float = 0.25) -> void:
 	var tween_body_alpha: Tween = create_tween()
 	tween_body_alpha.tween_property(_texture_container, ^"modulate:a", value, time)

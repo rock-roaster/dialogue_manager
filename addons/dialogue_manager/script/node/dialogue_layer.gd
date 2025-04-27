@@ -7,16 +7,16 @@ class_name DialogueLayer
 var _processing_label: DialogueLabel
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
+var _speaking_character: Character
+var _popup_parent: Node
+
 var _popup_position: Vector2
 var _popup_direction: int
-var _popup_parent: Node
 var _use_label_bubble: bool
 
 var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
-
-var _speaking_character: Character
 
 var _dialogue_manager: Dialogue = Dialogue
 
@@ -24,7 +24,6 @@ var _dialogue_manager: Dialogue = Dialogue
 func _init() -> void:
 	_popup_position = get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
-	_popup_parent = null
 	_use_label_bubble = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
@@ -110,13 +109,13 @@ func set_speaking_character(value: Character, auto_switch_point: bool = false) -
 	if _speaking_character == value: return
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
-		_speaking_character.change_position(Vector2.ZERO)
+		_speaking_character.change_texture_offset(Vector2.ZERO)
 
 	_speaking_character = value
 
 	if _speaking_character != null:
 		_speaking_character.change_brightness(1.0)
-		_speaking_character.change_position(Vector2(0.0, -24.0))
+		_speaking_character.change_texture_offset(Vector2(0.0, -36.0))
 
 	# 自动切换至角色指定弹出节点
 	if auto_switch_point:
@@ -127,12 +126,12 @@ func set_speaking_character(value: Character, auto_switch_point: bool = false) -
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
+	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 	var line_position: Vector2 = line.get_data("position", _popup_position)
 	var line_direction: int = line.get_data("direction", _popup_direction)
 	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
 	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
-	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 
 	if line_popup_parent == null: line_popup_parent = self
