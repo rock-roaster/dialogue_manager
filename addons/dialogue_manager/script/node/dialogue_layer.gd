@@ -18,13 +18,15 @@ var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
 
+var _speaking_character: Character
+
 var _dialogue_manager: Dialogue = Dialogue
 
 
 func _init() -> void:
 	_popup_position = get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
-	_popup_parent = self
+	_popup_parent = null
 	_use_label_bubble = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
@@ -32,6 +34,7 @@ func _init() -> void:
 	_auto_advance_time = _dialogue_manager.get_setting_value("auto_advance_time")
 
 	_dialogue_manager.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
+	dialogue_label_popup.connect(_on_dialogue_label_popup)
 
 
 func _input(event: InputEvent) -> void:
@@ -77,9 +80,20 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager._finish_line()
 
 
+func _on_dialogue_label_popup(label: DialogueLabel) -> void:
+	if _speaking_character == null: return
+	_speaking_character.set_speaking_label(label)
+
+
+func get_screen_center() -> Vector2:
+	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
+	return Vector2(screen_size_x, screen_size_y) * 0.5
+
+
 func set_popup_parent(value: Node) -> void:
 	_popup_parent = value
-	if value == self:
+	if value == null or value.get("position") == null:
 		_popup_position = get_screen_center()
 
 
@@ -95,10 +109,22 @@ func set_use_label_bubble(value: bool) -> void:
 	_use_label_bubble = value
 
 
-func get_screen_center() -> Vector2:
-	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
-	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
-	return Vector2(screen_size_x, screen_size_y) * 0.5
+func set_speaking_character(value: Character, auto_switch_point: bool = false) -> void:
+	if _speaking_character == value: return
+	if _speaking_character != null:
+		_speaking_character.change_brightness(0.5)
+		_speaking_character.speak_started.disconnect(_speaking_character.change_brightness)
+	if value != null:
+		value.speak_started.connect(value.change_brightness.bind(1.0))
+
+	# 自动切换至角色指定弹出节点
+	if auto_switch_point:
+		if value != null && value.popup_point != null:
+			set_popup_parent(value.popup_point)
+		else:
+			set_popup_parent(null)
+
+	_speaking_character = value
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
@@ -110,8 +136,10 @@ func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> Di
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 
+	if line_popup_parent == null: line_popup_parent = self
+
 	# 此处判断条件可自行修改，以适应弹出对话位置变化
-	if line.has_data("popup_parent") or _popup_parent != self:
+	if line.has_data("popup_parent") or line_popup_parent != self:
 		if not line.has_data("position"):
 			line_position = Vector2.ZERO
 

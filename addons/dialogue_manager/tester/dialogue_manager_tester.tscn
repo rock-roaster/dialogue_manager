@@ -34,7 +34,7 @@ offset_bottom = 70.0
 grow_horizontal = 2
 text = "Press Accept to Activate."
 
-[node name="Character1" type="Control" parent="."]
+[node name="Character1" type="Control" parent="." node_paths=PackedStringArray("popup_point")]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -46,6 +46,7 @@ offset_bottom = 144.0
 grow_horizontal = 2
 script = ExtResource("3_o2h6j")
 character_data = ExtResource("5_o2h6j")
+popup_point = NodePath("Control")
 body_alpha = 0.0
 brightness = 0.5
 
@@ -56,7 +57,7 @@ offset_top = 348.0
 offset_right = 240.0
 offset_bottom = 348.0
 
-[node name="Character2" type="Control" parent="."]
+[node name="Character2" type="Control" parent="." node_paths=PackedStringArray("popup_point")]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -68,6 +69,7 @@ offset_bottom = 144.0
 grow_horizontal = 2
 script = ExtResource("3_o2h6j")
 character_data = ExtResource("4_fwjtd")
+popup_point = NodePath("Control")
 body_alpha = 0.0
 brightness = 0.5
 
