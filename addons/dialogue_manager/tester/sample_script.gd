@@ -8,7 +8,9 @@ func _dialogue_process() -> void:
 	var push_point_02: Control = get_data("node_02") as Control
 	var push_point_03: Control = get_data("node_03") as Control
 	var set_speaking_character: Callable = get_data("call_01") as Callable
+	var chang_bar_size: Callable = get_data("call_02") as Callable
 
+	add_callable(chang_bar_size.bind(72.0))
 	add_callable(char_01.change_body_alpha.bind(1.0))
 	add_callable(char_02.change_body_alpha.bind(1.0), true, false)
 
@@ -33,9 +35,10 @@ func _dialogue_process() -> void:
 
 	add_callable(char_02.change_expression.bind("普通"))
 	add_callable(set_speaking_character.bind(null, true))
-	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"])\
+	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "炮兵怕把标兵碰，标兵怕碰炮兵炮。"])\
 		.set_popup_parent(push_point_03).set_label_bubble(false).set_ms_per_char(10.0)
 
+	add_callable(chang_bar_size.bind(0.0))
 	add_callable(char_01.change_body_alpha.bind(0.0))
 	add_callable(char_02.change_body_alpha.bind(0.0), true)
 	add_text("八百标兵奔北坡，北坡炮兵并排跑。\n炮兵怕把标兵碰，标兵怕碰炮兵炮。").set_ms_per_char(0.0)
