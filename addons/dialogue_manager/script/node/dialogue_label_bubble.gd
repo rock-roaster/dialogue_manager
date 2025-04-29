@@ -2,6 +2,8 @@ extends DialogueLabel
 class_name DialogueLabelBubble
 
 
+signal scale_finished
+
 ## 气泡弹出方向
 enum PopupDirection {
 	NONE = 0,   ## 居中弹出
@@ -63,11 +65,12 @@ func _init(
 func show_line_text(line: DialogueLine) -> void:
 	set_scale(Vector2.ZERO)
 	await super(line)
+	if scale < Vector2.ONE: await scale_finished
 
 
 func _line_process(line: DialogueLine) -> void:
 	_refresh_popup_offset()
-	_tween_scale(1.0, 0.2)
+	_tween_scale(1.0, 0.25)
 	super(line)
 
 
@@ -107,3 +110,4 @@ func _tween_scale(times: float, duration: float) -> void:
 	tween_scale.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
 	tween_scale.tween_property(self, ^"scale", Vector2.ONE * times, duration)
 	await tween_scale.finished
+	scale_finished.emit()

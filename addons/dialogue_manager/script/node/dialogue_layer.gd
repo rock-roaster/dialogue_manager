@@ -18,6 +18,8 @@ var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
 
+var _auto_switch_direction: bool
+
 var _dialogue_manager: Dialogue = Dialogue
 
 
@@ -25,6 +27,7 @@ func _init() -> void:
 	_popup_position = get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
 	_use_label_bubble = true
+	_auto_switch_direction = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
 	_ms_per_char = _dialogue_manager.get_setting_value("msec_per_character")
@@ -87,10 +90,28 @@ func get_screen_center() -> Vector2:
 	return Vector2(screen_size_x, screen_size_y) * 0.5
 
 
+func auto_refresh_direction(postion: Vector2) -> void:
+	if not _auto_switch_direction: return
+	_popup_direction = 0
+
+	if _popup_parent == null: return
+	var screen_center: Vector2 = get_screen_center()
+	if postion.x != screen_center.x:
+		if postion.x > screen_center.x: _popup_direction = 1
+		if postion.x < screen_center.x: _popup_direction = 2
+	else:
+		if postion.y < screen_center.y: _popup_direction = 3
+		if postion.y > screen_center.y: _popup_direction = 4
+
+
 func set_popup_parent(value: Node) -> void:
 	_popup_parent = value
-	if value == null or value.get("position") == null:
+
+	if value != null && value.get("global_position") != null:
+		auto_refresh_direction(value.global_position)
+	else:
 		_popup_position = get_screen_center()
+		_popup_direction = 0
 
 
 func set_popup_position(value: Vector2) -> void:

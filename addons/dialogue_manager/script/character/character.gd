@@ -33,6 +33,7 @@ var _expression_dict: Dictionary
 var _timer_blink: Timer
 var _timer_speak: Timer
 var _audio_player: AudioStreamPlayer
+
 var _texture_container: MarginContainer
 var _texture_rect_dict: Dictionary[StringName, TextureRect] = {
 	"body": null, "face": null, "mouth": null, "eyes": null, "brows": null, "addons": null}
@@ -78,8 +79,8 @@ func set_node_structure() -> void:
 	add_child(_texture_container)
 
 	var sample_texture_rect: TextureRect = TextureRect.new()
-	sample_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	sample_texture_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sample_texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	for key_name in _texture_rect_dict:
 		var texture_duplicate: TextureRect = sample_texture_rect.duplicate()
 		_texture_rect_dict[key_name] = texture_duplicate
@@ -203,7 +204,7 @@ func change_brightness(value: float, time: float = 0.25) -> void:
 	await tween_brightness.finished
 
 
-func change_expression(exp_name: String) -> void:
+func change_expression(exp_name: String = "普通") -> void:
 	if !_expression_dict.has(exp_name): return
 	_thread_expression.add_task(change_expression_thread.bind(exp_name))
 
