@@ -23,15 +23,43 @@ metadata/_edit_group_ = true
 script = ExtResource("3_kq6wo")
 enable = true
 
+[node name="Point3" type="Control" parent="DialogueLayer"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = 108.0
+offset_right = -240.0
+offset_bottom = 108.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Point4" type="Control" parent="DialogueLayer"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 240.0
+offset_top = 108.0
+offset_right = 240.0
+offset_bottom = 108.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Character1" type="Control" parent="." node_paths=PackedStringArray("popup_point")]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -480.0
-offset_top = 192.0
+offset_top = 180.0
 offset_right = -480.0
-offset_bottom = 192.0
+offset_bottom = 180.0
 grow_horizontal = 2
 script = ExtResource("3_o2h6j")
 character_data = ExtResource("5_o2h6j")
@@ -59,9 +87,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 480.0
-offset_top = 192.0
+offset_top = 180.0
 offset_right = 480.0
-offset_bottom = 192.0
+offset_bottom = 180.0
 grow_horizontal = 2
 script = ExtResource("3_o2h6j")
 character_data = ExtResource("4_fwjtd")

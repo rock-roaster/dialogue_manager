@@ -9,8 +9,11 @@ func _ready() -> void:
 			"char_01": $Character1,
 			"char_02": $Character2,
 			"node_01": $Contents/BottomBar/Panel,
+			"node_02": $DialogueLayer/Point3,
+			"node_03": $DialogueLayer/Point4,
 			"call_01": change_bar_size,
 			"call_02": dialogue_layer.set_speaking_character,
+			"call_03": dialogue_layer.set_popup_parent,
 		}
 	)
 

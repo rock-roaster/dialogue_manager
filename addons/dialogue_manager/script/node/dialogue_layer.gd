@@ -126,7 +126,7 @@ func set_use_label_bubble(value: bool) -> void:
 	_use_label_bubble = value
 
 
-func set_speaking_character(value: Character, auto_switch_point: bool = false) -> void:
+func set_speaking_character(value: Character, auto_switch_point: bool = true) -> void:
 	if _speaking_character == value: return
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
@@ -148,12 +148,13 @@ func set_speaking_character(value: Character, auto_switch_point: bool = false) -
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
 	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
-	var line_position: Vector2 = line.get_data("position", _popup_position)
-	var line_direction: int = line.get_data("direction", _popup_direction)
 	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
 	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
 	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
+
+	var line_position: Vector2 = line.get_data("position", _popup_position)
+	var line_direction: int = line.get_data("direction", _popup_direction)
 
 	if line_popup_parent == null: line_popup_parent = self
 
