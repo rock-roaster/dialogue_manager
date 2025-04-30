@@ -7,7 +7,6 @@ const SPEAK_AUDIO_STREAM: AudioStream = preload("res://addons/dialogue_manager/s
 
 @export var character_data: CharacterData
 @export var can_blink: bool = true
-@export var popup_point: Node
 
 @export_group("Default Status")
 @export var expression: String = "普通"

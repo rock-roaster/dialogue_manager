@@ -18,12 +18,14 @@ var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
 
+var _characters: Dictionary[StringName, Character]
+
 var _dialogue_manager: Dialogue:
 	get: return Dialogue
 
 
 func _init() -> void:
-	_popup_position = get_screen_center()
+	_popup_position = _get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
 	_use_label_bubble = true
 
@@ -82,8 +84,14 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager._finish_line()
 
 
+func _get_screen_center() -> Vector2:
+	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
+	return Vector2(screen_size_x, screen_size_y) * 0.5
+
+
 func _refresh_direction(postion: Vector2) -> void:
-	var screen_center: Vector2 = get_screen_center()
+	var screen_center: Vector2 = _get_screen_center()
 	_popup_direction = 0
 	if postion.x != screen_center.x:
 		if postion.x > screen_center.x: _popup_direction = 1
@@ -91,12 +99,6 @@ func _refresh_direction(postion: Vector2) -> void:
 	else:
 		if postion.y < screen_center.y: _popup_direction = 3
 		if postion.y > screen_center.y: _popup_direction = 4
-
-
-func get_screen_center() -> Vector2:
-	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
-	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
-	return Vector2(screen_size_x, screen_size_y) * 0.5
 
 
 func set_popup_position(value: Vector2) -> void:
@@ -111,19 +113,24 @@ func set_use_label_bubble(value: bool) -> void:
 	_use_label_bubble = value
 
 
-func set_popup_parent(value: Node, refresh_popup: bool = true) -> void:
+func set_popup_parent(
+	value: Node,
+	position_offset: Vector2 = Vector2.ZERO,
+	) -> void:
+
 	_popup_parent = value
 
-	if not refresh_popup: return
-	if value != null && value.get("global_position") != null:
-		_popup_position = Vector2.ZERO
-		_refresh_direction(value.global_position)
+	if value != null && value.get("position") != null:
+		_popup_position = position_offset
 	else:
-		_popup_position = get_screen_center()
-		_popup_direction = 0
+		_popup_position = _get_screen_center() + position_offset
+		_refresh_direction(_popup_position)
 
 
-func set_speaking_character(value: Character) -> void:
+func set_speaking_character(
+	value: Character,
+	position_offset: Vector2 = Vector2.ZERO,
+	) -> void:
 	if _speaking_character == value: return
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
@@ -136,10 +143,12 @@ func set_speaking_character(value: Character) -> void:
 		_speaking_character.change_texture_offset(Vector2(0.0, -36.0))
 
 	# 自动切换至角色指定弹出节点
-	if _speaking_character == null:
+	if _speaking_character != null:
+		var final_position: Vector2 = Vector2(0.0, 450.0) + position_offset
+		set_popup_parent(_speaking_character, final_position)
+		_refresh_direction(_speaking_character.global_position + final_position)
+	else:
 		set_popup_parent(null)
-	elif _speaking_character.popup_point != null:
-		set_popup_parent(_speaking_character.popup_point)
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
@@ -182,3 +191,32 @@ func close_dialogue_label(label_name: StringName = "") -> void:
 	if target_label == null: return
 	target_label.get_parent().remove_child(target_label)
 	target_label.queue_free()
+
+
+func add_character(
+	char_name: StringName,
+	data_path: String,
+	position: Vector2 = Vector2(0.0, 180.0),
+	expression: String = "普通",
+	body_alpha: float = 0.0,
+	brightness: float = 0.5,
+	) -> Character:
+
+	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
+	if char_data == null: return
+
+	var new_character: Character = Character.new(char_data, expression, body_alpha, brightness)
+	new_character.position = position
+
+	_characters.set(char_name, new_character)
+	add_child(new_character)
+	return new_character
+
+
+func erase_character(char_name: StringName) -> void:
+	if not _characters.has(char_name): return
+	var target_character: Character = _characters.get(char_name) as Character
+	_characters.erase(char_name)
+	if target_character != null:
+		target_character.get_parent().remove_child(target_character)
+		target_character.queue_free()

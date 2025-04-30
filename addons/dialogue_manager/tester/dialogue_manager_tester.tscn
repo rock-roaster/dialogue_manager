@@ -1,10 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cllngis8un7i2"]
+[gd_scene load_steps=4 format=3 uid="uid://cllngis8un7i2"]
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
-[ext_resource type="Script" uid="uid://dgvra4vut8alw" path="res://addons/dialogue_manager/script/character/character.gd" id="3_o2h6j"]
-[ext_resource type="Resource" uid="uid://behi7vrf5huio" path="res://addons/dialogue_manager/tester/sample_character/小恶魔/小恶魔.tres" id="4_fwjtd"]
-[ext_resource type="Resource" uid="uid://dup26r64kmrds" path="res://addons/dialogue_manager/tester/sample_character/帕秋莉/帕秋莉.tres" id="5_o2h6j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7cdp7"]
 
@@ -23,107 +20,19 @@ metadata/_edit_group_ = true
 script = ExtResource("3_kq6wo")
 enable = true
 
-[node name="Point3" type="Control" parent="DialogueLayer"]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = 108.0
-offset_right = -240.0
-offset_bottom = 108.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Point4" type="Control" parent="DialogueLayer"]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 240.0
-offset_top = 108.0
-offset_right = 240.0
-offset_bottom = 108.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Character1" type="Control" parent="." node_paths=PackedStringArray("popup_point")]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -480.0
-offset_top = 180.0
-offset_right = -480.0
-offset_bottom = 180.0
-grow_horizontal = 2
-script = ExtResource("3_o2h6j")
-character_data = ExtResource("5_o2h6j")
-popup_point = NodePath("Point1")
-body_alpha = 0.0
-brightness = 0.5
-
-[node name="Point1" type="Control" parent="Character1"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 240.0
-offset_top = 300.0
-offset_right = 240.0
-offset_bottom = 300.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Character2" type="Control" parent="." node_paths=PackedStringArray("popup_point")]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 480.0
-offset_top = 180.0
-offset_right = 480.0
-offset_bottom = 180.0
-grow_horizontal = 2
-script = ExtResource("3_o2h6j")
-character_data = ExtResource("4_fwjtd")
-popup_point = NodePath("Point2")
-body_alpha = 0.0
-brightness = 0.5
-
-[node name="Point2" type="Control" parent="Character2"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = 540.0
-offset_right = -240.0
-offset_bottom = 540.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Contents" type="VBoxContainer" parent="."]
-layout_mode = 1
+[node name="Contents" type="VBoxContainer" parent="DialogueLayer"]
+z_index = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopBar" type="ColorRect" parent="Contents"]
+[node name="TopBar" type="ColorRect" parent="DialogueLayer/Contents"]
 layout_mode = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="Contents/TopBar"]
+[node name="Label" type="Label" parent="DialogueLayer/Contents/TopBar"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -137,15 +46,15 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Press Accept to Activate."
 
-[node name="Control" type="Control" parent="Contents"]
+[node name="Control" type="Control" parent="DialogueLayer/Contents"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BottomBar" type="ColorRect" parent="Contents"]
+[node name="BottomBar" type="ColorRect" parent="DialogueLayer/Contents"]
 layout_mode = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Panel" type="PanelContainer" parent="Contents/BottomBar"]
+[node name="Panel" type="PanelContainer" parent="DialogueLayer/Contents/BottomBar"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
