@@ -15,10 +15,12 @@ func _dialogue_process() -> void:
 	add_callable(char_01.change_body_alpha.bind(1.0))
 	add_callable(char_02.change_body_alpha.bind(1.0), true, false)
 
-	add_callable(set_speaking_character.bind(char_01, false))
+	add_callable(set_speaking_character.bind(char_01))
+	add_callable(set_popup_parent.bind(null))
 	add_text("八百标兵奔北坡，北坡炮兵并排跑。").set_direction(3)
 
-	add_callable(set_speaking_character.bind(char_02, false))
+	add_callable(set_speaking_character.bind(char_02))
+	add_callable(set_popup_parent.bind(null))
 	add_text("炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		).set_gaps_time(0.25).set_name("label_01").set_direction(4)
 	close_label("label_01")
@@ -36,14 +38,14 @@ func _dialogue_process() -> void:
 
 	add_callable(char_02.change_expression)
 	add_callable(char_01.change_expression.bind("坏笑"))
-	add_callable(set_speaking_character.bind(char_01, false))
+	add_callable(set_speaking_character.bind(char_01))
 	add_callable(set_popup_parent.bind(push_point_02))
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_gaps_time(0.25)
 
 	add_callable(char_01.change_expression)
 	add_callable(char_02.change_expression.bind("坏笑"))
-	add_callable(set_speaking_character.bind(char_02, false))
+	add_callable(set_speaking_character.bind(char_02))
 	add_callable(set_popup_parent.bind(push_point_03))
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_gaps_time(0.25)

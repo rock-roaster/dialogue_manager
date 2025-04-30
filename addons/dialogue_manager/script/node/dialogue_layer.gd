@@ -18,16 +18,14 @@ var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
 
-var _auto_switch_direction: bool
-
-var _dialogue_manager: Dialogue = Dialogue
+var _dialogue_manager: Dialogue:
+	get: return Dialogue
 
 
 func _init() -> void:
 	_popup_position = get_screen_center()
 	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
 	_use_label_bubble = true
-	_auto_switch_direction = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
 	_ms_per_char = _dialogue_manager.get_setting_value("msec_per_character")
@@ -84,18 +82,9 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager._finish_line()
 
 
-func get_screen_center() -> Vector2:
-	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
-	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
-	return Vector2(screen_size_x, screen_size_y) * 0.5
-
-
-func auto_refresh_direction(postion: Vector2) -> void:
-	if not _auto_switch_direction: return
-	_popup_direction = 0
-
-	if _popup_parent == null: return
+func _refresh_direction(postion: Vector2) -> void:
 	var screen_center: Vector2 = get_screen_center()
+	_popup_direction = 0
 	if postion.x != screen_center.x:
 		if postion.x > screen_center.x: _popup_direction = 1
 		if postion.x < screen_center.x: _popup_direction = 2
@@ -104,14 +93,10 @@ func auto_refresh_direction(postion: Vector2) -> void:
 		if postion.y > screen_center.y: _popup_direction = 4
 
 
-func set_popup_parent(value: Node) -> void:
-	_popup_parent = value
-
-	if value != null && value.get("global_position") != null:
-		auto_refresh_direction(value.global_position)
-	else:
-		_popup_position = get_screen_center()
-		_popup_direction = 0
+func get_screen_center() -> Vector2:
+	var screen_size_x: int = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var screen_size_y: int = ProjectSettings.get_setting("display/window/size/viewport_height")
+	return Vector2(screen_size_x, screen_size_y) * 0.5
 
 
 func set_popup_position(value: Vector2) -> void:
@@ -126,7 +111,19 @@ func set_use_label_bubble(value: bool) -> void:
 	_use_label_bubble = value
 
 
-func set_speaking_character(value: Character, auto_switch_point: bool = true) -> void:
+func set_popup_parent(value: Node, refresh_popup: bool = true) -> void:
+	_popup_parent = value
+
+	if not refresh_popup: return
+	if value != null && value.get("global_position") != null:
+		_popup_position = Vector2.ZERO
+		_refresh_direction(value.global_position)
+	else:
+		_popup_position = get_screen_center()
+		_popup_direction = 0
+
+
+func set_speaking_character(value: Character) -> void:
 	if _speaking_character == value: return
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
@@ -139,29 +136,23 @@ func set_speaking_character(value: Character, auto_switch_point: bool = true) ->
 		_speaking_character.change_texture_offset(Vector2(0.0, -36.0))
 
 	# 自动切换至角色指定弹出节点
-	if auto_switch_point:
-		if _speaking_character != null && _speaking_character.popup_point != null:
-			set_popup_parent(_speaking_character.popup_point)
-		else:
-			set_popup_parent(null)
+	if _speaking_character == null:
+		set_popup_parent(null)
+	elif _speaking_character.popup_point != null:
+		set_popup_parent(_speaking_character.popup_point)
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
-	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
+	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 	var line_ms_per_char: float = line.get_data("ms_per_char", _ms_per_char)
 	var line_bbcode_enabled: bool = line.get_data("bbcode_enabled", true)
 	var line_pause_between_parts: float = line.get_data("gaps_time", 0.0)
-	var line_label_bubble: bool = line.get_data("label_bubble", _use_label_bubble)
 
 	var line_position: Vector2 = line.get_data("position", _popup_position)
 	var line_direction: int = line.get_data("direction", _popup_direction)
 
+	var line_popup_parent: Node = line.get_data("popup_parent", _popup_parent)
 	if line_popup_parent == null: line_popup_parent = self
-
-	# 此处判断条件可自行修改，以适应弹出对话位置变化
-	if line.has_data("popup_parent") or line_popup_parent != self:
-		if not line.has_data("position"):
-			line_position = Vector2.ZERO
 
 	var new_dialogue_label: DialogueLabel
 	if not line_label_bubble:
