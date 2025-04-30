@@ -7,8 +7,10 @@ class_name DialogueLayer
 var _processing_label: DialogueLabel
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
 
-var _speaking_character: Character
 var _popup_parent: Node
+
+var _speaking_character: Character
+var _characters: Dictionary[StringName, Character]
 
 var _popup_position: Vector2
 var _popup_direction: int
@@ -17,8 +19,6 @@ var _use_label_bubble: bool
 var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
-
-var _characters: Dictionary[StringName, Character]
 
 var _dialogue_manager: Dialogue:
 	get: return Dialogue
@@ -196,11 +196,13 @@ func close_dialogue_label(label_name: StringName = "") -> void:
 func add_character(
 	char_name: StringName,
 	data_path: String,
-	position: Vector2 = Vector2(0.0, 180.0),
+	position: Vector2 = Vector2(960.0, 180.0),
 	expression: String = "普通",
 	body_alpha: float = 0.0,
 	brightness: float = 0.5,
 	) -> Character:
+
+	if _characters.has(char_name): return get_character(char_name)
 
 	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
 	if char_data == null: return
@@ -213,10 +215,17 @@ func add_character(
 	return new_character
 
 
-func erase_character(char_name: StringName) -> void:
+func get_character(char_name: StringName) -> Character:
+	if not _characters.has(char_name): return
+	var target_character: Character = _characters.get(char_name) as Character
+	return target_character
+
+
+func remove_character(char_name: StringName) -> void:
 	if not _characters.has(char_name): return
 	var target_character: Character = _characters.get(char_name) as Character
 	_characters.erase(char_name)
-	if target_character != null:
-		target_character.get_parent().remove_child(target_character)
-		target_character.queue_free()
+
+	if target_character == null: return
+	target_character.get_parent().remove_child(target_character)
+	target_character.queue_free()

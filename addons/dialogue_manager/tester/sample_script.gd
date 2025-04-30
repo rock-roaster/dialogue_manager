@@ -3,8 +3,8 @@ extends DialogueScript
 
 func _dialogue_process() -> void:
 	var dialogue_layer: DialogueLayer = get_data("dialogue_layer") as DialogueLayer
-	var char_01: Character = get_data("char_01") as Character
-	var char_02: Character = get_data("char_02") as Character
+	var char_01: Character = dialogue_layer.get_character("帕秋莉") as Character
+	var char_02: Character = dialogue_layer.get_character("小恶魔") as Character
 	var push_point_01: Control = get_data("node_01") as Control
 	var chang_bar_size: Callable = get_data("call_01") as Callable
 	var set_speaking_character: Callable = dialogue_layer.set_speaking_character

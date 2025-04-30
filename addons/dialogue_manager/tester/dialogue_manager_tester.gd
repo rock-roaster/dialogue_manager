@@ -7,21 +7,19 @@ func _ready() -> void:
 	dialogue_layer.add_character(
 		"帕秋莉",
 		"res://addons/dialogue_manager/tester/sample_character/帕秋莉/帕秋莉.tres",
-		Vector2(480.0, 180.0)
+		Vector2(480.0, 180.0),
 	)
 
 	dialogue_layer.add_character(
 		"小恶魔",
 		"res://addons/dialogue_manager/tester/sample_character/小恶魔/小恶魔.tres",
-		Vector2(1440.0, 180.0)
+		Vector2(1440.0, 180.0),
 	)
 
 	Dialogue.load_dialogue_script(
 		"res://addons/dialogue_manager/tester/sample_script.gd",
 		{
-			"dialogue_layer": $DialogueLayer,
-			"char_01": dialogue_layer._characters.get("帕秋莉"),
-			"char_02": dialogue_layer._characters.get("小恶魔"),
+			"dialogue_layer": dialogue_layer,
 			"node_01": $DialogueLayer/Contents/BottomBar/Panel,
 			"call_01": change_bar_size,
 		}
