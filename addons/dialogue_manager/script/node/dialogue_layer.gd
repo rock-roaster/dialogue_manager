@@ -148,7 +148,7 @@ func set_speaking_character(
 		set_popup_parent(_speaking_character, final_position)
 		_refresh_direction(_speaking_character.global_position + final_position)
 	else:
-		set_popup_parent(null)
+		set_popup_parent(null, position_offset)
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:

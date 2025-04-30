@@ -7,55 +7,62 @@ func _dialogue_process() -> void:
 	var char_02: Character = dialogue_layer.get_character("小恶魔") as Character
 	var push_point_01: Control = get_data("node_01") as Control
 	var chang_bar_size: Callable = get_data("call_01") as Callable
-	var set_speaking_character: Callable = dialogue_layer.set_speaking_character
 	var set_popup_parent: Callable = dialogue_layer.set_popup_parent
+	var set_speaking_character: Callable = dialogue_layer.set_speaking_character
 
 	add_callable(chang_bar_size.bind(72.0))
 	add_callable(char_01.change_body_alpha.bind(1.0))
 	add_callable(char_02.change_body_alpha.bind(1.0), true, false)
 
 	add_callable(set_speaking_character.bind(char_01))
-	add_callable(set_popup_parent.bind(null))
-	add_text("八百标兵奔北坡，北坡炮兵并排跑。").set_direction(3)
+	add_callable(set_popup_parent.bind(null, Vector2(0.0, -5.0)))
+
+	add_text("八百标兵奔北坡，北坡炮兵并排跑。")
 
 	add_callable(set_speaking_character.bind(char_02))
-	add_callable(set_popup_parent.bind(null))
-	add_text("炮兵怕把标兵碰，标兵怕碰炮兵炮。").set_direction(4).set_name("label_01")
+	add_callable(set_popup_parent.bind(null, Vector2(0.0, +5.0)))
+
+	add_text("炮兵怕把标兵碰，标兵怕碰炮兵炮。").set_name("label_01")
 	close_label("label_01")
 
 	add_callable(char_01.change_expression.bind("坏笑"))
 	add_callable(set_speaking_character.bind(char_01, Vector2(+240.0, 0.0)))
+
 	add_text(["[shake]八百标兵奔北坡，[/shake]", 0.25, "\n北坡炮兵并排跑。"])
 
 	add_callable(char_01.change_expression)
 	add_callable(char_02.change_expression.bind("坏笑"))
 	add_callable(set_speaking_character.bind(char_02, Vector2(-240.0, 200.0)))
-	add_text(["[wave]炮兵怕把标兵碰，[/wave]", "\n标兵怕碰炮兵炮。"
-		]).set_gaps_time(0.25).set_name("label_02")
+
+	add_text(["[wave]炮兵怕把标兵碰，[/wave]", 0.25, "\n标兵怕碰炮兵炮。"]).set_name("label_02")
 	close_label("label_02")
 
 	add_callable(char_02.change_expression)
 	add_callable(char_01.change_expression.bind("坏笑"))
 	add_callable(set_speaking_character.bind(char_01, Vector2(+240.0, 0.0)))
+
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_gaps_time(0.25)
 
 	add_callable(char_01.change_expression)
 	add_callable(char_02.change_expression.bind("坏笑"))
 	add_callable(set_speaking_character.bind(char_02, Vector2(-240.0, 0.0)))
+
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_gaps_time(0.25)
 
 	add_callable(char_02.change_expression)
 	add_callable(set_speaking_character.bind(null))
+
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_popup_parent(push_point_01).set_label_bubble(false).set_ms_per_char(10.0)
 
 	add_callable(chang_bar_size.bind(0.0))
 	add_callable(char_01.change_body_alpha.bind(0.0))
 	add_callable(char_02.change_body_alpha.bind(0.0), true)
+
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_ms_per_char(0.0)
-
 	close_label()
+
 	add_script("res://addons/dialogue_manager/tester/sample_script.gd", _dialogue_data)
