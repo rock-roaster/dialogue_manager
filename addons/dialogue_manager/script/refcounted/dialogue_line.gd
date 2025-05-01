@@ -39,6 +39,10 @@ func get_callable() -> Callable:
 	return get_data("callable", Callable())
 
 
+func get_arg_array() -> Array:
+	return get_data("arg_array", [])
+
+
 func get_text_stream() -> String:
 	var line_text_array: Array = get_text()
 	var temp_text_array: Array = line_text_array.filter(
@@ -61,6 +65,12 @@ func set_data_dict(
 
 
 #region set_line_data
+func set_await_call(value: bool = true) -> DialogueLine:
+	return set_data("await_call", value)
+
+func set_auto_advance(value: bool = true) -> DialogueLine:
+	return set_data("auto_advance", value)
+
 func set_name(value: StringName) -> DialogueLine:
 	return set_data("name", value)
 
@@ -100,11 +110,16 @@ static func get_text_line(text: Variant, auto_advance: bool = false) -> Dialogue
 
 static func get_callable_line(
 		callable: Callable,
+		arg_array: Variant = [],
 		await_call: bool = false,
 		auto_advance: bool = true,
 		) -> DialogueLine:
+
+	if arg_array is not Array: arg_array = [arg_array]
+
 	var new_line: DialogueLine = DialogueLine.new(1)
 	new_line.set_data("callable", callable)
-	new_line.set_data("await", await_call)
+	new_line.set_data("arg_array", arg_array)
+	new_line.set_data("await_call", await_call)
 	new_line.set_data("auto_advance", auto_advance)
 	return new_line

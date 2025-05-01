@@ -37,11 +37,13 @@ func add_text(text: Variant, auto_advance: bool = false) -> DialogueLine:
 
 func add_callable(
 	callable: Callable,
+	arg_array: Variant = [],
 	await_call: bool = false,
 	auto_advance: bool = true,
 	) -> DialogueLine:
 
-	var new_line: DialogueLine = DialogueLine.get_callable_line(callable, await_call, auto_advance)
+	var new_line: DialogueLine = DialogueLine.get_callable_line(
+		callable, arg_array, await_call, auto_advance)
 	_dialogue_lines.append(new_line)
 	return new_line
 
@@ -49,7 +51,7 @@ func add_callable(
 func add_timer(wait_time: float) -> DialogueLine:
 	var callable: Callable = func():
 		await _dialogue_manager.get_tree().create_timer(wait_time).timeout
-	return add_callable(callable, true, true)
+	return add_callable(callable, [], true, true)
 
 
 func add_script(
@@ -57,8 +59,8 @@ func add_script(
 	data: Dictionary[StringName, Variant] = {},
 	) -> DialogueLine:
 
-	var callable: Callable = _dialogue_manager.load_dialogue_script.bind(path, data)
-	return add_callable(callable, false, true)
+	var callable: Callable = _dialogue_manager.load_dialogue_script
+	return add_callable(callable, [path, data], false, true)
 
 
 func close_label(name: StringName = "", auto_advance: bool = true) -> DialogueLine:

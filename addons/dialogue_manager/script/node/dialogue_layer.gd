@@ -135,6 +135,7 @@ func set_speaking_character(
 	if value is String or value is StringName:
 		value = get_character(value) as Character
 
+	if value is not Character: value = null
 	if _speaking_character == value: return
 
 	if _speaking_character != null:
@@ -211,7 +212,7 @@ func add_character(
 		var target_character: Character = get_character(char_name)
 		if target_character != null: return target_character
 
-	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
+	var char_data: CharacterData = System.resource_manager.load_resource(data_path) as CharacterData
 	if char_data == null: return
 
 	var new_character: Character = Character.new(
@@ -237,9 +238,13 @@ func remove_character(char_name: StringName) -> void:
 	target_character.queue_free()
 
 
-func character_call(char_name: StringName, method: StringName, args_array: Variant = []) -> void:
+func character_call(char_name: StringName, method: StringName, arg_array: Variant = []) -> void:
 	var target_character: Character = get_character(char_name)
-	if target_character == null: return
-	if not target_character.has_method(method): return
-	if args_array is not Array: args_array = [args_array]
-	await target_character.callv(method, args_array)
+	await call_delay(target_character, method, arg_array)
+
+
+func call_delay(object: Object, method: StringName, arg_array: Variant = []) -> void:
+	if not is_instance_valid(object): return
+	if not object.has_method(method): return
+	if arg_array is not Array: arg_array = [arg_array]
+	await object.callv(method, arg_array)

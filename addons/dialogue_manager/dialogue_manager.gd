@@ -96,14 +96,15 @@ func _add_history_line(line: DialogueLine) -> void:
 
 func _dialogue_line_process_callable(line: DialogueLine) -> void:
 	var line_callable: Callable = line.get_callable()
-	var line_await: bool = line.get_data("await", false)
+	var line_arg_array: Array = line.get_arg_array()
+	var line_await: bool = line.get_data("await_call", false)
 	var line_auto_advance: bool = line.get_data("auto_advance", true)
 
 	if line_callable.is_valid():
 		if line_await:
-			await line_callable.call()
+			await line_callable.callv(line_arg_array)
 		else:
-			line_callable.call()
+			line_callable.callv(line_arg_array)
 
 	_finish_line()
 	if line_auto_advance: get_next_line()

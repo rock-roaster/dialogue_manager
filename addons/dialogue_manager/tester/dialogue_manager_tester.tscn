@@ -1,9 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://cllngis8un7i2"]
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
+[ext_resource type="PackedScene" uid="uid://bc0xf73ljjleb" path="res://addons/dialogue_manager/components/screen_margin/screen_margin.tscn" id="3_1xrrj"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7cdp7"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -20,44 +19,6 @@ metadata/_edit_group_ = true
 script = ExtResource("3_kq6wo")
 enable = true
 
-[node name="Contents" type="VBoxContainer" parent="DialogueLayer"]
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="ScreenMargin" parent="DialogueLayer" instance=ExtResource("3_1xrrj")]
 
-[node name="TopBar" type="ColorRect" parent="DialogueLayer/Contents"]
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Label" type="Label" parent="DialogueLayer/Contents/TopBar"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -284.5
-offset_top = -70.0
-offset_right = 284.5
-grow_horizontal = 2
-grow_vertical = 0
-text = "Press Accept to Activate."
-
-[node name="Control" type="Control" parent="DialogueLayer/Contents"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="BottomBar" type="ColorRect" parent="DialogueLayer/Contents"]
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="Panel" type="PanelContainer" parent="DialogueLayer/Contents/BottomBar"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_7cdp7")
+[editable path="DialogueLayer/ScreenMargin"]
