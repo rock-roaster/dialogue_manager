@@ -1,2 +1,1 @@
-Require Godot Core System Ref.
-address: https://github.com/rock-roaster/godot_core_system_ref
+Require Godot Core System Ref: https://github.com/rock-roaster/godot_core_system_ref
