@@ -128,10 +128,15 @@ func set_popup_parent(
 
 
 func set_speaking_character(
-	value: Character,
+	value: Variant,
 	position_offset: Vector2 = Vector2.ZERO,
 	) -> void:
+
+	if value is String or value is StringName:
+		value = get_character(value) as Character
+
 	if _speaking_character == value: return
+
 	if _speaking_character != null:
 		_speaking_character.change_brightness(0.5)
 		_speaking_character.change_texture_offset(Vector2.ZERO)
@@ -202,12 +207,15 @@ func add_character(
 	brightness: float = 0.5,
 	) -> Character:
 
-	if _characters.has(char_name): return get_character(char_name)
+	if _characters.has(char_name):
+		var target_character: Character = get_character(char_name)
+		if target_character != null: return target_character
 
 	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
 	if char_data == null: return
 
-	var new_character: Character = Character.new(char_data, expression, body_alpha, brightness)
+	var new_character: Character = Character.new(
+		char_data, expression, body_alpha, brightness)
 	new_character.position = position
 
 	_characters.set(char_name, new_character)
@@ -216,9 +224,7 @@ func add_character(
 
 
 func get_character(char_name: StringName) -> Character:
-	if not _characters.has(char_name): return
-	var target_character: Character = _characters.get(char_name) as Character
-	return target_character
+	return _characters.get(char_name, null) as Character
 
 
 func remove_character(char_name: StringName) -> void:
@@ -229,3 +235,11 @@ func remove_character(char_name: StringName) -> void:
 	if target_character == null: return
 	target_character.get_parent().remove_child(target_character)
 	target_character.queue_free()
+
+
+func character_call(char_name: StringName, method: StringName, args_array: Variant = []) -> void:
+	var target_character: Character = get_character(char_name)
+	if target_character == null: return
+	if not target_character.has_method(method): return
+	if args_array is not Array: args_array = [args_array]
+	await target_character.callv(method, args_array)
