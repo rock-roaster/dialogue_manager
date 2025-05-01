@@ -57,9 +57,10 @@ func set_data(key: StringName, value: Variant) -> DialogueLine:
 
 
 func set_data_dict(
-		data: Dictionary[StringName, Variant],
-		overwrite: bool = true,
-		) -> DialogueLine:
+	data: Dictionary[StringName, Variant],
+	overwrite: bool = true,
+	) -> DialogueLine:
+
 	_dialogue_data.merge(data, overwrite)
 	return self
 
@@ -100,20 +101,25 @@ func set_popup_parent(value: Node) -> DialogueLine:
 #endregion
 
 
-static func get_text_line(text: Variant, auto_advance: bool = false) -> DialogueLine:
-	var new_line: DialogueLine = DialogueLine.new(0)
+static func get_text_line(
+	text: Variant,
+	auto_advance: bool = false,
+	) -> DialogueLine:
+
 	if text is String or text is StringName: text = [text] as Array
+
+	var new_line: DialogueLine = DialogueLine.new(0)
 	new_line.set_data("text", text)
 	new_line.set_data("auto_advance", auto_advance)
 	return new_line
 
 
 static func get_callable_line(
-		callable: Callable,
-		arg_array: Variant = [],
-		await_call: bool = false,
-		auto_advance: bool = true,
-		) -> DialogueLine:
+	callable: Callable,
+	arg_array: Variant = [],
+	await_call: bool = false,
+	auto_advance: bool = true,
+	) -> DialogueLine:
 
 	if arg_array is not Array: arg_array = [arg_array]
 

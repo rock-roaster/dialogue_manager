@@ -49,9 +49,9 @@ func add_callable(
 
 
 func add_timer(wait_time: float) -> DialogueLine:
-	var callable: Callable = func():
-		await _dialogue_manager.get_tree().create_timer(wait_time).timeout
-	return add_callable(callable, [], true, true)
+	var callable: Callable = func(value: float):
+		await _dialogue_manager.get_tree().create_timer(value).timeout
+	return add_callable(callable, wait_time, true, true)
 
 
 func add_script(

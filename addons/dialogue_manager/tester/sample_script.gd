@@ -38,7 +38,7 @@ func _dialogue_process() -> void:
 	close_label("label_01")
 
 	add_callable(character_call, ["帕秋莉", "change_expression", "坏笑"])
-	add_callable(set_speaking_character, ["帕秋莉", Vector2(+240.0, 0.0)])
+	add_callable(set_speaking_character, ["帕秋莉", Vector2(240.0, 0.0)])
 
 	add_text(["[shake]八百标兵奔北坡，[/shake]", 0.25, "\n北坡炮兵并排跑。"])
 
@@ -51,7 +51,7 @@ func _dialogue_process() -> void:
 
 	add_callable(character_call, ["小恶魔", "change_expression"])
 	add_callable(character_call, ["帕秋莉", "change_expression", "坏笑"])
-	add_callable(set_speaking_character, ["帕秋莉", Vector2(+240.0, 0.0)])
+	add_callable(set_speaking_character, ["帕秋莉", Vector2(240.0, 0.0)])
 
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", "\n炮兵怕把标兵碰，标兵怕碰炮兵炮。"
 		]).set_gaps_time(0.25)

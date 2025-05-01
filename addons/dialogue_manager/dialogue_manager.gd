@@ -27,9 +27,9 @@ func _init() -> void:
 
 
 func load_dialogue_script(
-		path: String,
-		data: Dictionary[StringName, Variant] = {},
-		) -> void:
+	path: String,
+	data: Dictionary[StringName, Variant] = {},
+	) -> void:
 
 	var new_dialogue_script: DialogueScript = DialogueScript.get_new_script(path, data)
 	if new_dialogue_script == null: return
@@ -45,6 +45,8 @@ func get_next_line() -> DialogueLine:
 
 	_can_push_dialogue_line = false
 	var next_line: DialogueLine = _dialogue_script_processing.get_next_line()
+
+	# 将推出的对话行保存至运行对话行
 	_dialogue_line_processing = next_line
 
 	# 当对话脚本运行完毕
@@ -54,14 +56,12 @@ func get_next_line() -> DialogueLine:
 		return
 
 	dialogue_line_pushed.emit(next_line)
-
-	# 将推出的对话行保存至运行对话行
 	_dialogue_line_process(next_line)
 
 	return next_line
 
 
-## 在每个对话行运行完成后调用该函数以允许推进对话，不建议通过input输入手动调用。
+## 在每个对话行运行完成后调用该函数以允许推进对话，不建议从外部调用。
 func _finish_line() -> void:
 	if _can_push_dialogue_line: return
 	if _dialogue_line_processing == null: return
