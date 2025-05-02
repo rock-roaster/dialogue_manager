@@ -19,12 +19,14 @@ func _dialogue_process() -> void:
 	var set_popup_parent: Callable = dialogue_layer.set_popup_parent
 	var set_speaking_character: Callable = dialogue_layer.set_speaking_character
 
-	add_callable(add_character, ["帕秋莉", char_path_01, Vector2(480.0, 180.0)])
-	add_callable(add_character, ["小恶魔", char_path_02, Vector2(1440.0, 180.0)])
+	add_callable(add_character, ["帕秋莉", char_path_01, Vector2(-480.0, 0.0)])
+	add_callable(add_character, ["小恶魔", char_path_02, Vector2(+480.0, 0.0)])
 
 	add_callable(chang_bar_size, 72.0)
 
-	add_callable(background.change_background, "background_01.png")
+	add_callable(background.change_background,
+		"res://addons/dialogue_manager/tester/background/background_01.png")
+
 	add_callable(character_call, ["帕秋莉", "change_body_alpha", 1.0])
 	add_callable(character_call, ["小恶魔", "change_body_alpha", 1.0], true, false)
 
@@ -40,7 +42,9 @@ func _dialogue_process() -> void:
 	add_text("炮兵怕把标兵碰，标兵怕碰炮兵炮。").set_name("label_01")
 	close_label("label_01")
 
-	add_callable(background.change_background, "background_02.png")
+	add_callable(background.change_background,
+		"res://addons/dialogue_manager/tester/background/background_02.png")
+
 	add_callable(character_call, ["帕秋莉", "change_expression", "坏笑"])
 	add_callable(set_speaking_character, ["帕秋莉", Vector2(240.0, 0.0)])
 
@@ -54,7 +58,9 @@ func _dialogue_process() -> void:
 	add_text(["[wave]炮兵怕把标兵碰，[/wave]", 0.25, "\n标兵怕碰炮兵炮。"]).set_name("label_02")
 	close_label("label_02")
 
-	add_callable(background.change_background, "background_03.png")
+	add_callable(background.change_background,
+		"res://addons/dialogue_manager/tester/background/background_01.png")
+
 	add_callable(character_call, ["小恶魔", "change_expression"])
 	add_callable(character_call, ["帕秋莉", "change_expression", "坏笑"])
 	add_callable(set_speaking_character, ["帕秋莉", Vector2(240.0, 0.0)])

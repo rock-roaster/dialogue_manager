@@ -202,7 +202,7 @@ func close_dialogue_label(label_name: StringName = "") -> void:
 func add_character(
 	char_name: StringName,
 	data_path: String,
-	position: Vector2 = Vector2(960.0, 180.0),
+	position: Vector2 = Vector2.ZERO,
 	expression: String = "普通",
 	body_alpha: float = 0.0,
 	brightness: float = 0.5,
@@ -217,7 +217,9 @@ func add_character(
 
 	var new_character: Character = Character.new(
 		char_data, expression, body_alpha, brightness)
-	new_character.position = position
+
+	var default_position: Vector2 = _get_screen_center() * Vector2(1.0, 0.33)
+	new_character.position = default_position + position
 
 	_characters.set(char_name, new_character)
 	add_child(new_character)

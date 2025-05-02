@@ -2,14 +2,12 @@ extends TextureRect
 class_name Background
 
 
-const BLUR_SHADER: ShaderMaterial = preload("res://addons/dialogue_manager/theme/shader/simple_blur.tres")
-
-@export_dir var background_dir: String
-
-var _tween_blur: Tween
-var _tween_brightness: Tween
+const BLUR_SHADER: ShaderMaterial = preload(
+	"res://addons/dialogue_manager/theme/shader/simple_blur.tres")
 
 var _blur_rect: ColorRect
+var _tween_blur: Tween
+var _tween_brightness: Tween
 
 
 func _init() -> void:
@@ -25,12 +23,13 @@ func _init() -> void:
 	add_child(_blur_rect)
 
 
-func clear_texture(time: float = 0.4) -> void:
-	var new_texture_rect: TextureRect = get_texture_rect(texture)
-	add_child(new_texture_rect)
-	set_texture(null)
-	await tween_canvas_alpha(new_texture_rect, 0.0, time)
-	new_texture_rect.queue_free()
+func get_texture_rect(texture2d: Texture2D) -> TextureRect:
+	var new_texture_rect: TextureRect = TextureRect.new()
+	new_texture_rect.set_anchors_preset(Control.PRESET_FULL_RECT, true)
+	new_texture_rect.set_expand_mode(TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL)
+	new_texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT_COVERED)
+	new_texture_rect.set_texture(texture2d)
+	return new_texture_rect
 
 
 func change_texture(texture2d: Texture2D, time: float = 0.4) -> void:
@@ -42,26 +41,26 @@ func change_texture(texture2d: Texture2D, time: float = 0.4) -> void:
 	new_texture_rect.queue_free()
 
 
-func change_background(file: String) -> void:
-	if not background_dir.ends_with("/"): background_dir += "/"
-	var file_name: String = background_dir + file
-	var next_texture: Texture2D = ResourceLoader.load(file_name, "Texture2D")
-	await change_texture(next_texture)
+func change_background(file_path: String, time: float = 0.4) -> void:
+	var next_texture: Texture2D = ResourceLoader.load(file_path, "Texture2D")
+	if next_texture == null: return
+	await change_texture(next_texture, time)
 
 
-func get_texture_rect(texture2d: Texture2D) -> TextureRect:
-	var new_texture_rect: TextureRect = TextureRect.new()
-	new_texture_rect.set_anchors_preset(Control.PRESET_FULL_RECT, true)
-	new_texture_rect.set_expand_mode(TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL)
-	new_texture_rect.set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT_COVERED)
-	new_texture_rect.texture = texture2d
-	return new_texture_rect
+func clear_texture(time: float = 0.4) -> void:
+	var new_texture_rect: TextureRect = get_texture_rect(texture)
+	add_child(new_texture_rect)
+	set_texture(null)
+	await tween_canvas_alpha(new_texture_rect, 0.0, time)
+	new_texture_rect.queue_free()
 
 
-func tween_canvas_alpha(canvas: CanvasItem, alpha: float, time: float = 0.4) -> void:
-	var tween_alpha: Tween = canvas.create_tween()
-	tween_alpha.tween_property(canvas, ^"modulate:a", alpha, time)
-	await tween_alpha.finished
+func change_blur_amount(value: float, time: float = 0.4) -> void:
+	var current_value: float = get_shader_amount()
+	if _tween_blur: _tween_blur.kill()
+	_tween_blur = create_tween()
+	_tween_blur.tween_method(set_shader_amount, current_value, value, time)
+	await _tween_blur.finished
 
 
 func change_brightness(value: float, time: float = 0.4) -> void:
@@ -71,12 +70,10 @@ func change_brightness(value: float, time: float = 0.4) -> void:
 	await _tween_brightness.finished
 
 
-func change_blur_amount(value: float, time: float = 0.4) -> void:
-	var current_value: float = get_shader_amount()
-	if _tween_blur: _tween_blur.kill()
-	_tween_blur = create_tween()
-	_tween_blur.tween_method(set_shader_amount, current_value, value, time)
-	await _tween_blur.finished
+func tween_canvas_alpha(canvas: CanvasItem, alpha: float, time: float = 0.4) -> void:
+	var tween_alpha: Tween = canvas.create_tween()
+	tween_alpha.tween_property(canvas, ^"modulate:a", alpha, time)
+	await tween_alpha.finished
 
 
 func get_shader_amount() -> float:

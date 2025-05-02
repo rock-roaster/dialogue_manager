@@ -27,7 +27,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_myqyg")
-background_dir = "res://addons/dialogue_manager/tester/background"
 
 [node name="ScreenMargin" parent="DialogueLayer" instance=ExtResource("3_1xrrj")]
 
