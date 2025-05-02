@@ -26,7 +26,7 @@ var _dialogue_manager: Dialogue:
 
 func _init() -> void:
 	_popup_position = _get_screen_center()
-	_popup_direction = DialogueLabelBubble.PopupDirection.NONE
+	_popup_direction = 0
 	_use_label_bubble = true
 
 	_break_tweening = _dialogue_manager.get_setting_value("break_tweening")
@@ -212,7 +212,7 @@ func add_character(
 		var target_character: Character = get_character(char_name)
 		if target_character != null: return target_character
 
-	var char_data: CharacterData = System.resource_manager.load_resource(data_path) as CharacterData
+	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
 	if char_data == null: return
 
 	var new_character: Character = Character.new(

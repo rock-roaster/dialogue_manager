@@ -218,13 +218,13 @@ func change_expression_thread(exp_name: String) -> void:
 
 func change_brows(file_name: String) -> void:
 	var file_path: String = "%s/眉毛/%s.png" % [character_data.character_dir, file_name]
-	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
+	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_rect_dict["brows"].set_texture(texture2d)
 
 
 func change_eyes(file_name: String) -> void:
 	var file_path: String = "%s/眼睛/%s.png" % [character_data.character_dir, file_name]
-	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
+	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_eyes = texture2d
 	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
 	if _timer_blink.is_stopped(): start_blink_timer()
@@ -232,20 +232,20 @@ func change_eyes(file_name: String) -> void:
 
 func change_mouth(file_name: String) -> void:
 	var file_path: String = "%s/嘴巴/%s.png" % [character_data.character_dir, file_name]
-	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
+	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_mouth = texture2d
 	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
 
 
 func change_face(file_name: String = "") -> void:
 	var file_path: String = "%s/其他/%s.png" % [character_data.character_dir, file_name]
-	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
+	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["face"].set_texture(texture2d)
 
 
 func change_addons(file_name: String = "") -> void:
 	var file_path: String = "%s/其他/%s.png" % [character_data.character_dir, file_name]
-	var texture2d: Texture2D = System.resource_manager.load_resource(file_path, "Texture2D")
+	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["addons"].set_texture(texture2d)
