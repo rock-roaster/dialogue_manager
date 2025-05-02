@@ -1,6 +1,10 @@
 extends VBoxContainer
 
 
+func _init() -> void:
+	z_index = 1
+
+
 func change_bar_size(value: float) -> void:
 	var bar_size_tweener: Tween = create_tween().set_parallel()
 	bar_size_tweener.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUART)

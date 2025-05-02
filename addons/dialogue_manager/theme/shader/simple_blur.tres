@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bxdynlc5b7mdg"]
+
+[ext_resource type="Shader" uid="uid://bsu2benf861yg" path="res://addons/dialogue_manager/theme/shader/simple_blur.gdshader" id="1_x4sac"]
+
+[resource]
+shader = ExtResource("1_x4sac")
+shader_parameter/blur_amount = 0.0
+shader_parameter/mix_amount = 0.0
+shader_parameter/color_over = Color(0, 0, 0, 1)

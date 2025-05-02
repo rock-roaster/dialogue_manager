@@ -6,6 +6,7 @@ func _ready() -> void:
 		"res://addons/dialogue_manager/tester/sample_script.gd",
 		{
 			"dialogue_layer": $DialogueLayer,
+			"background": $DialogueLayer/Background,
 			"node_01": $DialogueLayer/ScreenMargin/BottomBar/Panel,
 			"call_01": $DialogueLayer/ScreenMargin.change_bar_size,
 		}

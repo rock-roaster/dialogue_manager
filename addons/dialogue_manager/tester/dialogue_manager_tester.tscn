@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cllngis8un7i2"]
+[gd_scene load_steps=5 format=3 uid="uid://cllngis8un7i2"]
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
 [ext_resource type="PackedScene" uid="uid://bc0xf73ljjleb" path="res://addons/dialogue_manager/components/screen_margin/screen_margin.tscn" id="3_1xrrj"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
+[ext_resource type="Script" uid="uid://idnnn3yn4acr" path="res://addons/dialogue_manager/components/background.gd" id="4_myqyg"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -18,6 +19,15 @@ metadata/_edit_group_ = true
 [node name="DialogueLayer" type="CanvasLayer" parent="."]
 script = ExtResource("3_kq6wo")
 enable = true
+
+[node name="Background" type="TextureRect" parent="DialogueLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_myqyg")
+background_dir = "res://addons/dialogue_manager/tester/background"
 
 [node name="ScreenMargin" parent="DialogueLayer" instance=ExtResource("3_1xrrj")]
 
