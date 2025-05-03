@@ -7,7 +7,8 @@ content_margin_right = 24.0
 content_margin_bottom = 8.0
 bg_color = Color(0, 0, 0, 0.74902)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0kxrp"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i3k17"]
+bg_color = Color(1, 1, 1, 0.266667)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3k17"]
 
@@ -19,7 +20,7 @@ Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/styles/disabled = SubResource("StyleBoxFlat_0kxrp")
-Button/styles/focus = SubResource("StyleBoxEmpty_0kxrp")
+Button/styles/focus = SubResource("StyleBoxFlat_i3k17")
 Button/styles/hover = SubResource("StyleBoxFlat_0kxrp")
 Button/styles/normal = SubResource("StyleBoxFlat_0kxrp")
 Button/styles/pressed = SubResource("StyleBoxFlat_0kxrp")

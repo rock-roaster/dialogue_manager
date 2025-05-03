@@ -17,7 +17,7 @@ func _ready() -> void:
 
 
 func add_option() -> void:
-	option_manager.add_option(true)
+	option_manager.add_main_option(true)
 	option_manager.add_custom_button("重新加载脚本", func():
 		_ready()
 		Dialogue.get_next_line()

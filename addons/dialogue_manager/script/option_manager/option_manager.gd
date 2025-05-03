@@ -21,13 +21,20 @@ func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
 
 
-func add_option(one_shot: bool = false) -> OptionContainer:
-	var new_container: OptionContainer = _get_option_container(one_shot)
-	if current_container != null:
-		current_container.hide()
+func add_option(can_exit: bool = true, one_shot: bool = false) -> OptionContainer:
+	var new_container: OptionContainer = _get_option_container(can_exit, one_shot)
+	if current_container != null: current_container.hide()
 	current_container = new_container
 	add_child(new_container)
 	return new_container
+
+
+func add_main_option(one_shot: bool = false) -> OptionContainer:
+	return add_option(false, one_shot)
+
+
+func add_sub_option(one_shot: bool = true) -> OptionContainer:
+	return add_option(true, one_shot)
 
 
 func add_button(text: String, callable: Callable = Callable()) -> Button:
@@ -96,15 +103,22 @@ func _get_default_button() -> Button:
 	return new_button
 
 
-func _get_option_container(one_shot: bool = false) -> OptionContainer:
+func _get_option_container(
+	can_exit: bool = true,
+	one_shot: bool = false,
+	) -> OptionContainer:
+
 	var new_container: Container = base_container.duplicate()\
 		if base_container != null else _get_default_container()
 	new_container.set_script(OptionContainer)
+	new_container = new_container as OptionContainer
+
+	new_container.can_exit = can_exit
+	new_container.one_shot = one_shot
 
 	var option_focus: Control = get_viewport().gui_get_focus_owner()
-	new_container.can_exit = true
-	new_container.one_shot = one_shot
-	new_container.tree_exited.connect(_on_option_return.bind(current_container, option_focus))
+	new_container.tree_exited.connect(
+		_on_option_return.bind(current_container, option_focus))
 	return new_container
 
 
@@ -125,4 +139,4 @@ func _on_option_return(option: OptionContainer, focus: Control) -> void:
 
 func _grab_previous_focus(focus: Control) -> void:
 	if is_instance_valid(focus) && focus.is_visible_in_tree():
-		focus.grab_focus.call_deferred()
+		if focus.focus_mode != Control.FOCUS_NONE: focus.grab_focus.call_deferred()
