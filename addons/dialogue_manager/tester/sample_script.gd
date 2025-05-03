@@ -11,6 +11,7 @@ func _dialogue_process() -> void:
 	var dialogue_layer: DialogueLayer = get_data("dialogue_layer") as DialogueLayer
 	var background: Background = get_data("background") as Background
 	var screen_margin: ScreenMargin = get_data("screen_margin") as ScreenMargin
+	var add_option: Callable = get_data("call_01") as Callable
 
 	var add_character: Callable = dialogue_layer.add_character
 	var character_call: Callable = dialogue_layer.character_call
@@ -92,4 +93,4 @@ func _dialogue_process() -> void:
 		]).set_ms_per_char(0.0)
 	close_label()
 
-	add_script("res://addons/dialogue_manager/tester/sample_script.gd", _dialogue_data)
+	add_callable(add_option)

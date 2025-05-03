@@ -42,6 +42,8 @@ func _input(event: InputEvent) -> void:
 
 func _on_accept_pressed() -> void:
 	if not enable: return
+	if _dialogue_manager._dialogue_script_processing == null: return
+
 	get_viewport().set_input_as_handled()
 
 	if _processing_label != null && _processing_label.visible_characters_processing():

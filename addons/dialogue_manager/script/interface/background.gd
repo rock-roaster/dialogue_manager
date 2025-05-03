@@ -15,7 +15,6 @@ func _init() -> void:
 	set_expand_mode(TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL)
 	set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT_COVERED)
 	z_index = -1
-
 	_build_node_structure()
 
 

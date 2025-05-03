@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cllngis8un7i2"]
+[gd_scene load_steps=6 format=3 uid="uid://cllngis8un7i2"]
 
 [ext_resource type="Script" uid="uid://oghrrs4m0y1j" path="res://addons/dialogue_manager/tester/dialogue_manager_tester.gd" id="1_q7776"]
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
-[ext_resource type="Script" uid="uid://idnnn3yn4acr" path="res://addons/dialogue_manager/components/background.gd" id="4_myqyg"]
-[ext_resource type="Script" uid="uid://cpanvkf0tjdwx" path="res://addons/dialogue_manager/components/screen_margin.gd" id="4_o2h6j"]
+[ext_resource type="Script" uid="uid://idnnn3yn4acr" path="res://addons/dialogue_manager/script/interface/background.gd" id="4_myqyg"]
+[ext_resource type="Script" uid="uid://cpanvkf0tjdwx" path="res://addons/dialogue_manager/script/interface/screen_margin.gd" id="4_o2h6j"]
+[ext_resource type="Script" uid="uid://dk8xoo6pidaq4" path="res://addons/dialogue_manager/script/option_manager/option_manager.gd" id="5_o2h6j"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -21,19 +22,13 @@ script = ExtResource("3_kq6wo")
 enable = true
 
 [node name="Background" type="TextureRect" parent="DialogueLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 script = ExtResource("4_myqyg")
 
 [node name="ScreenMargin" type="VBoxContainer" parent="DialogueLayer"]
-z_index = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 script = ExtResource("4_o2h6j")
+
+[node name="OptionManager" type="Control" parent="DialogueLayer"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("5_o2h6j")
+metadata/_custom_type_script = "uid://dk8xoo6pidaq4"

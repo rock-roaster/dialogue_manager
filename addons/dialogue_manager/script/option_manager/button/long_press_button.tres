@@ -1,0 +1,27 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://7ajp70csb38b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0kxrp"]
+content_margin_left = 24.0
+content_margin_top = 8.0
+content_margin_right = 24.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0.74902)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0kxrp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3k17"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1o8d"]
+bg_color = Color(1, 1, 1, 0.266667)
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_0kxrp")
+Button/styles/focus = SubResource("StyleBoxEmpty_0kxrp")
+Button/styles/hover = SubResource("StyleBoxFlat_0kxrp")
+Button/styles/normal = SubResource("StyleBoxFlat_0kxrp")
+Button/styles/pressed = SubResource("StyleBoxFlat_0kxrp")
+ProgressBar/styles/background = SubResource("StyleBoxEmpty_i3k17")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_x1o8d")

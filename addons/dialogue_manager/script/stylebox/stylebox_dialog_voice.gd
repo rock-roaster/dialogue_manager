@@ -1,5 +1,4 @@
 @tool
-
 extends StyleBox
 class_name StyleBoxDialogVoice
 
