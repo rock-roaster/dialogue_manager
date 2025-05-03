@@ -17,5 +17,5 @@ class_name CharacterData
 var character_dir: String
 
 
-func _init() -> void:
-	character_dir = get_path().get_base_dir()
+static func get_character_data(file_path: String) -> CharacterData:
+	return ResourceLoader.load(file_path, "Resource") as CharacterData

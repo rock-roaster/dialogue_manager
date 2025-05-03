@@ -11,10 +11,10 @@
 
 [resource]
 script = ExtResource("8_vfgm4")
-character_dir = "res://addons/dialogue_manager/tester/sample_character/帕秋莉"
 body_texture = ExtResource("1_ubuux")
+file_suffix = "png"
 voice_pitch = 0.9
 eyes_blink = ExtResource("2_a4rnq")
-eyes_close = Array[CompressedTexture2D]([ExtResource("3_rmvun"), ExtResource("4_pdhor")])
+eyes_close = Array[Texture2D]([ExtResource("3_rmvun"), ExtResource("4_pdhor")])
 mouth_connect = ExtResource("5_ap6gh")
-mouth_speaking = Array[CompressedTexture2D]([ExtResource("6_jrvvs"), ExtResource("7_4wn32")])
+mouth_speaking = Array[Texture2D]([ExtResource("6_jrvvs"), ExtResource("7_4wn32")])

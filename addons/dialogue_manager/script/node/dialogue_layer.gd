@@ -214,7 +214,7 @@ func add_character(
 		var target_character: Character = get_character(char_name)
 		if target_character != null: return target_character
 
-	var char_data: CharacterData = ResourceLoader.load(data_path) as CharacterData
+	var char_data: CharacterData = CharacterData.get_character_data(data_path)
 	if char_data == null: return
 
 	var new_character: Character = Character.new(

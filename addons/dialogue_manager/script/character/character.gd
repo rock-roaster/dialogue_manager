@@ -13,6 +13,7 @@ const SPEAK_AUDIO_STREAM: AudioStream = preload("res://addons/dialogue_manager/s
 @export_range(0.0, 1.0, 0.1) var body_alpha: float = 1.0
 @export_range(0.0, 1.0, 0.1) var brightness: float = 1.0
 
+#region inner props
 var _default_position: Vector2
 
 var _blink_twice: bool
@@ -36,6 +37,7 @@ var _audio_player: AudioStreamPlayer
 var _texture_container: MarginContainer
 var _texture_rect_dict: Dictionary[StringName, TextureRect] = {
 	"body": null, "face": null, "mouth": null, "eyes": null, "brows": null, "addons": null}
+#endregion
 
 
 func _init(
@@ -102,11 +104,17 @@ func _ready() -> void:
 
 
 func set_character_data(char_data: CharacterData) -> void:
-	if !char_data: return
+	if char_data == null: return
 	character_data = char_data
+	character_data.character_dir = character_data.resource_path.get_base_dir()
 	_audio_player.set_pitch_scale(char_data.voice_pitch)
 	_texture_rect_dict["body"].set_texture(char_data.body_texture)
 	change_expression(expression)
+
+
+func set_character_data_path(path: String) -> void:
+	var char_data: CharacterData = CharacterData.get_character_data(path)
+	set_character_data(char_data)
 
 
 func set_default_position(value: Vector2) -> void:
