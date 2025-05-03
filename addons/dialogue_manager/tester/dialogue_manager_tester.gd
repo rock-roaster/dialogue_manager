@@ -22,5 +22,5 @@ func add_option() -> void:
 		_ready()
 		Dialogue.get_next_line()
 	)
-	option_manager.add_long_press_button("退出示例场景", get_tree().quit)
+	option_manager.add_custom_button("退出示例场景", get_tree().quit)
 	option_manager.set_button_vertical()

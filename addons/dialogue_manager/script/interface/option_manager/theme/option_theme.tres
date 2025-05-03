@@ -1,7 +1,7 @@
 [gd_resource type="Theme" load_steps=3 format=3 uid="uid://csns8x8ebfnek"]
 
-[ext_resource type="StyleBox" uid="uid://clv0sidb4sof5" path="res://addons/dialogue_manager/script/option_manager/theme/button_normal.tres" id="1_6ht6i"]
-[ext_resource type="StyleBox" uid="uid://0rs3rhi4gja5" path="res://addons/dialogue_manager/script/option_manager/theme/button_pressed.tres" id="2_j2x3h"]
+[ext_resource type="StyleBox" uid="uid://clv0sidb4sof5" path="res://addons/dialogue_manager/script/interface/option_manager/theme/button_normal.tres" id="1_6ht6i"]
+[ext_resource type="StyleBox" uid="uid://0rs3rhi4gja5" path="res://addons/dialogue_manager/script/interface/option_manager/theme/button_pressed.tres" id="2_j2x3h"]
 
 [resource]
 default_font_size = 48

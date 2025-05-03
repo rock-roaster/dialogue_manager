@@ -19,8 +19,8 @@ var _blink_twice: bool
 var _speak_time: float
 var _is_speaking: bool
 
-var _texture_eyes: CompressedTexture2D
-var _texture_mouth: CompressedTexture2D
+var _texture_eyes: Texture2D
+var _texture_mouth: Texture2D
 
 var _speaking_dialogue_label: DialogueLabel
 
@@ -167,7 +167,7 @@ func speaking_loop() -> void:
 	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
 
 
-func speaking_single(texture: CompressedTexture2D) -> void:
+func speaking_single(texture: Texture2D) -> void:
 	_texture_rect_dict["mouth"].set_texture(texture)
 	_audio_player.play()
 	_timer_speak.start(_speak_time)
@@ -205,25 +205,27 @@ func change_brightness(value: float, time: float = 0.25) -> void:
 
 func change_expression(exp_name: String = "普通") -> void:
 	if !_expression_dict.has(exp_name): return
+	expression = exp_name
 	_thread_expression.add_task(change_expression_thread.bind(exp_name))
 
 
 func change_expression_thread(exp_name: String) -> void:
 	var string_array: Array = _expression_dict[exp_name]
-	expression = exp_name
 	change_brows(string_array[0] as String)
 	change_eyes(string_array[1] as String)
 	change_mouth(string_array[2] as String)
 
 
 func change_brows(file_name: String) -> void:
-	var file_path: String = "%s/眉毛/%s.png" % [character_data.character_dir, file_name]
+	var file_path: String = "%s/眉毛/%s.%s" % [
+		character_data.character_dir, file_name, character_data.file_suffix]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_rect_dict["brows"].set_texture(texture2d)
 
 
 func change_eyes(file_name: String) -> void:
-	var file_path: String = "%s/眼睛/%s.png" % [character_data.character_dir, file_name]
+	var file_path: String = "%s/眼睛/%s.%s" % [
+		character_data.character_dir, file_name, character_data.file_suffix]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_eyes = texture2d
 	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
@@ -231,21 +233,24 @@ func change_eyes(file_name: String) -> void:
 
 
 func change_mouth(file_name: String) -> void:
-	var file_path: String = "%s/嘴巴/%s.png" % [character_data.character_dir, file_name]
+	var file_path: String = "%s/嘴巴/%s.%s" % [
+		character_data.character_dir, file_name, character_data.file_suffix]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_mouth = texture2d
 	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
 
 
 func change_face(file_name: String = "") -> void:
-	var file_path: String = "%s/其他/%s.png" % [character_data.character_dir, file_name]
+	var file_path: String = "%s/其他/%s.%s" % [
+		character_data.character_dir, file_name, character_data.file_suffix]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["face"].set_texture(texture2d)
 
 
 func change_addons(file_name: String = "") -> void:
-	var file_path: String = "%s/其他/%s.png" % [character_data.character_dir, file_name]
+	var file_path: String = "%s/其他/%s.%s" % [
+		character_data.character_dir, file_name, character_data.file_suffix]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["addons"].set_texture(texture2d)

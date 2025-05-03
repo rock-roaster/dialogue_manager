@@ -17,8 +17,10 @@ var current_previous_focus: Control
 
 func _init() -> void:
 	theme = OPTION_THEME
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
+	z_index = 3
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func add_option(can_exit: bool = true, one_shot: bool = false) -> OptionContainer:

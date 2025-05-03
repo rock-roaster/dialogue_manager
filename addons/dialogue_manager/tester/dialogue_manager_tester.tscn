@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://daxdfxbb14v10" path="res://addons/dialogue_manager/script/node/dialogue_layer.gd" id="3_kq6wo"]
 [ext_resource type="Script" uid="uid://idnnn3yn4acr" path="res://addons/dialogue_manager/script/interface/background.gd" id="4_myqyg"]
 [ext_resource type="Script" uid="uid://cpanvkf0tjdwx" path="res://addons/dialogue_manager/script/interface/screen_margin.gd" id="4_o2h6j"]
-[ext_resource type="Script" uid="uid://dk8xoo6pidaq4" path="res://addons/dialogue_manager/script/option_manager/option_manager.gd" id="5_o2h6j"]
+[ext_resource type="Script" uid="uid://dk8xoo6pidaq4" path="res://addons/dialogue_manager/script/interface/option_manager/option_manager.gd" id="5_o2h6j"]
 
 [node name="Tester" type="Control"]
 layout_mode = 3
@@ -31,4 +31,3 @@ script = ExtResource("4_o2h6j")
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("5_o2h6j")
-metadata/_custom_type_script = "uid://dk8xoo6pidaq4"

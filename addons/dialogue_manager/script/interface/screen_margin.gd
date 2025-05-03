@@ -11,8 +11,8 @@ var bottom_panel: PanelContainer
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	z_index = 4
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_node_structure()
 
 
