@@ -55,10 +55,10 @@ func _init(
 	body_alpha = _body_alpha
 	brightness = _brightness
 
-	set_node_structure()
+	_build_node_structure()
 
 
-func set_node_structure() -> void:
+func _build_node_structure() -> void:
 	var sample_timer: Timer = Timer.new()
 	sample_timer.one_shot = true
 	_timer_blink = sample_timer.duplicate()

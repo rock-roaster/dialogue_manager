@@ -7,7 +7,6 @@ func _ready() -> void:
 		{
 			"dialogue_layer": $DialogueLayer,
 			"background": $DialogueLayer/Background,
-			"node_01": $DialogueLayer/ScreenMargin/BottomBar/Panel,
-			"call_01": $DialogueLayer/ScreenMargin.change_bar_size,
+			"screen_margin": $DialogueLayer/ScreenMargin,
 		}
 	)

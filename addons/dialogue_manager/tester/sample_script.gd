@@ -10,8 +10,7 @@ func _dialogue_process() -> void:
 
 	var dialogue_layer: DialogueLayer = get_data("dialogue_layer") as DialogueLayer
 	var background: Background = get_data("background") as Background
-	var push_point_01: Control = get_data("node_01") as Control
-	var chang_bar_size: Callable = get_data("call_01") as Callable
+	var screen_margin: ScreenMargin = get_data("screen_margin") as ScreenMargin
 
 	var add_character: Callable = dialogue_layer.add_character
 	var character_call: Callable = dialogue_layer.character_call
@@ -22,7 +21,7 @@ func _dialogue_process() -> void:
 	add_callable(add_character, ["帕秋莉", char_path_01, Vector2(-480.0, 0.0)])
 	add_callable(add_character, ["小恶魔", char_path_02, Vector2(+480.0, 0.0)])
 
-	add_callable(chang_bar_size, 72.0)
+	add_callable(screen_margin.change_bar_size, 72.0)
 
 	add_callable(background.change_background,
 		"res://addons/dialogue_manager/tester/background/background_01.png")
@@ -80,9 +79,9 @@ func _dialogue_process() -> void:
 	add_callable(set_speaking_character, null)
 
 	add_text(["八百标兵奔北坡，北坡炮兵并排跑。", 0.25, "炮兵怕把标兵碰，标兵怕碰炮兵炮。"
-		]).set_popup_parent(push_point_01).set_label_bubble(false).set_ms_per_char(10.0)
+		]).set_popup_parent(screen_margin.bottom_panel).set_label_bubble(false).set_ms_per_char(10.0)
 
-	add_callable(chang_bar_size, 0.0)
+	add_callable(screen_margin.change_bar_size, 0.0)
 	add_callable(character_call, ["帕秋莉", "change_body_alpha", 0.0])
 	add_callable(character_call, ["小恶魔", "change_body_alpha", 0.0]).set_await_call()
 

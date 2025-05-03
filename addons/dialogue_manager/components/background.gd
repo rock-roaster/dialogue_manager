@@ -16,6 +16,10 @@ func _init() -> void:
 	set_stretch_mode(TextureRect.STRETCH_KEEP_ASPECT_COVERED)
 	z_index = -1
 
+	_build_node_structure()
+
+
+func _build_node_structure() -> void:
 	_blur_rect = ColorRect.new()
 	_blur_rect.set_anchors_preset(Control.PRESET_FULL_RECT, true)
 	_blur_rect.z_index = 1
