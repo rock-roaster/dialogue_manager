@@ -18,7 +18,7 @@ func _init() -> void:
 	theme = OPTION_THEME
 
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
-	z_index = 3
+	z_index = 2
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 

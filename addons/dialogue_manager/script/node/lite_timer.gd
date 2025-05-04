@@ -12,12 +12,7 @@ var process_callback: TimerMode
 signal timeout
 
 
-func _init(
-	time: float = 1.0,
-	timer_mode: int = TimerMode.PROCESS,
-	) -> void:
-
-	wait_time = time
+func _init(timer_mode: int = TimerMode.PROCESS) -> void:
 	process_callback = timer_mode
 
 

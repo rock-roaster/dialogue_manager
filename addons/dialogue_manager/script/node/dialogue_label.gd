@@ -9,6 +9,8 @@ signal character_process_finished
 
 const DIALOGUE_THEME: Theme = preload("res://addons/dialogue_manager/theme/dialogue_theme.tres")
 
+var skip_mode: bool = false
+
 var _target_characters: int
 
 var _ms_per_char: float
@@ -40,9 +42,8 @@ func _init(
 	_pause_between_parts = clampf(pause_between_parts, 0.0, pause_between_parts)
 
 	_pause_timer = LiteTimer.new()
-	add_child(_pause_timer)
-
 	_characters_timer = LiteTimer.new()
+	add_child(_pause_timer)
 	add_child(_characters_timer)
 
 
@@ -81,6 +82,7 @@ func _line_process(line: DialogueLine) -> void:
 			TYPE_CALLABLE:
 				await text_part.call()
 			TYPE_INT, TYPE_FLOAT:
+				if skip_mode: continue
 				await _pause_timer.count_down(text_part)
 			TYPE_STRING, TYPE_STRING_NAME:
 				_target_characters += strip_bbcode(text_part).length()
@@ -94,7 +96,7 @@ func _line_process(line: DialogueLine) -> void:
 
 
 func _visible_characters_process(chars: int) -> void:
-	if _ms_per_char <= 0.0:
+	if _ms_per_char <= 0.0 or skip_mode:
 		visible_characters = chars
 		return
 
