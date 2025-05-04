@@ -1,20 +1,19 @@
 [gd_resource type="Theme" load_steps=5 format=3 uid="uid://7ajp70csb38b"]
 
-[ext_resource type="StyleBox" uid="uid://clv0sidb4sof5" path="res://addons/dialogue_manager/script/interface/option_manager/theme/button_normal.tres" id="1_jld2q"]
-[ext_resource type="StyleBox" uid="uid://lwqndx4dff5p" path="res://addons/dialogue_manager/script/interface/option_manager/theme/button_progress.tres" id="2_imm01"]
-[ext_resource type="StyleBox" uid="uid://dqhcx7m7heras" path="res://addons/dialogue_manager/script/interface/option_manager/theme/button_flash_light.tres" id="3_annxg"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3k17"]
+[ext_resource type="StyleBox" uid="uid://clv0sidb4sof5" path="res://addons/dialogue_manager/script/interface/option_manager/theme/stylebox/button_normal.tres" id="1_imm01"]
+[ext_resource type="StyleBox" uid="uid://lwqndx4dff5p" path="res://addons/dialogue_manager/script/interface/option_manager/theme/stylebox/button_focus.tres" id="2_imm01"]
+[ext_resource type="StyleBox" uid="uid://dqhcx7m7heras" path="res://addons/dialogue_manager/script/interface/option_manager/theme/stylebox/panel_flash_light.tres" id="3_annxg"]
+[ext_resource type="StyleBox" uid="uid://dbot5c6410726" path="res://addons/dialogue_manager/script/interface/option_manager/theme/stylebox/button_empty.tres" id="4_0bmg6"]
 
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
-Button/styles/disabled = ExtResource("1_jld2q")
+Button/styles/disabled = ExtResource("1_imm01")
 Button/styles/focus = ExtResource("2_imm01")
-Button/styles/hover = ExtResource("1_jld2q")
-Button/styles/normal = ExtResource("1_jld2q")
-Button/styles/pressed = ExtResource("1_jld2q")
+Button/styles/hover = ExtResource("1_imm01")
+Button/styles/normal = ExtResource("1_imm01")
+Button/styles/pressed = ExtResource("1_imm01")
 Panel/styles/panel = ExtResource("3_annxg")
-ProgressBar/styles/background = SubResource("StyleBoxEmpty_i3k17")
+ProgressBar/styles/background = ExtResource("4_0bmg6")
 ProgressBar/styles/fill = ExtResource("2_imm01")

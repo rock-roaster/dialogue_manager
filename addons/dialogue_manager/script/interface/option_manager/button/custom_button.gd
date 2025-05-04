@@ -3,7 +3,7 @@ extends Button
 
 func _init() -> void:
 	custom_minimum_size.x = 480.0
-	mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 
 func _ready() -> void:
