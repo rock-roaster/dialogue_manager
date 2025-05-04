@@ -20,14 +20,18 @@ metadata/_edit_group_ = true
 [node name="DialogueLayer" type="CanvasLayer" parent="."]
 script = ExtResource("3_kq6wo")
 enable = true
+metadata/_custom_type_script = "uid://daxdfxbb14v10"
 
 [node name="Background" type="TextureRect" parent="DialogueLayer"]
 script = ExtResource("4_myqyg")
+metadata/_custom_type_script = "uid://idnnn3yn4acr"
 
 [node name="ScreenMargin" type="VBoxContainer" parent="DialogueLayer"]
 script = ExtResource("4_o2h6j")
+metadata/_custom_type_script = "uid://cpanvkf0tjdwx"
 
 [node name="OptionManager" type="Control" parent="DialogueLayer"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("5_o2h6j")
+metadata/_custom_type_script = "uid://dk8xoo6pidaq4"

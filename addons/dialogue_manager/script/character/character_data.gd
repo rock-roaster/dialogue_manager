@@ -3,7 +3,6 @@ class_name CharacterData
 
 
 @export var body_texture: Texture2D
-@export var file_suffix: String = "png"
 @export_range(0.5, 1.5, 0.01) var voice_pitch: float = 1.0
 
 @export_category("Eyes Texture")
@@ -15,6 +14,7 @@ class_name CharacterData
 @export var mouth_speaking: Array[Texture2D]
 
 var character_dir: String
+var file_extension: String
 
 
 static func get_character_data(file_path: String) -> CharacterData:

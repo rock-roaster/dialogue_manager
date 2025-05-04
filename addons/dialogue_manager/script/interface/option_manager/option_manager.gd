@@ -3,7 +3,6 @@ class_name OptionManager
 
 
 const OptionContainer := preload("./option_container.gd")
-const CustomButton := preload("./button/custom_button.gd")
 
 const OPTION_THEME: Theme = preload("./theme/option_theme.tres")
 

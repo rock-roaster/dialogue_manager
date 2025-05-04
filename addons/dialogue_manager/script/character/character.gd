@@ -106,7 +106,10 @@ func _ready() -> void:
 func set_character_data(char_data: CharacterData) -> void:
 	if char_data == null: return
 	character_data = char_data
+
 	character_data.character_dir = character_data.resource_path.get_base_dir()
+	character_data.file_extension = character_data.body_texture.resource_path.get_extension()
+
 	_audio_player.set_pitch_scale(char_data.voice_pitch)
 	_texture_rect_dict["body"].set_texture(char_data.body_texture)
 	change_expression(expression)
@@ -226,14 +229,14 @@ func change_expression_thread(exp_name: String) -> void:
 
 func change_brows(file_name: String) -> void:
 	var file_path: String = "%s/眉毛/%s.%s" % [
-		character_data.character_dir, file_name, character_data.file_suffix]
+		character_data.character_dir, file_name, character_data.file_extension]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_rect_dict["brows"].set_texture(texture2d)
 
 
 func change_eyes(file_name: String) -> void:
 	var file_path: String = "%s/眼睛/%s.%s" % [
-		character_data.character_dir, file_name, character_data.file_suffix]
+		character_data.character_dir, file_name, character_data.file_extension]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_eyes = texture2d
 	_texture_rect_dict["eyes"].set_texture(_texture_eyes)
@@ -242,7 +245,7 @@ func change_eyes(file_name: String) -> void:
 
 func change_mouth(file_name: String) -> void:
 	var file_path: String = "%s/嘴巴/%s.%s" % [
-		character_data.character_dir, file_name, character_data.file_suffix]
+		character_data.character_dir, file_name, character_data.file_extension]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	_texture_mouth = texture2d
 	_texture_rect_dict["mouth"].set_texture(_texture_mouth)
@@ -250,7 +253,7 @@ func change_mouth(file_name: String) -> void:
 
 func change_face(file_name: String = "") -> void:
 	var file_path: String = "%s/其他/%s.%s" % [
-		character_data.character_dir, file_name, character_data.file_suffix]
+		character_data.character_dir, file_name, character_data.file_extension]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["face"].set_texture(texture2d)
@@ -258,7 +261,7 @@ func change_face(file_name: String = "") -> void:
 
 func change_addons(file_name: String = "") -> void:
 	var file_path: String = "%s/其他/%s.%s" % [
-		character_data.character_dir, file_name, character_data.file_suffix]
+		character_data.character_dir, file_name, character_data.file_extension]
 	var texture2d: Texture2D = ResourceLoader.load(file_path, "Texture2D")
 	if !texture2d: texture2d = Texture2D.new()
 	_texture_rect_dict["addons"].set_texture(texture2d)
