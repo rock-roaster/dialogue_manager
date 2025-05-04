@@ -4,7 +4,7 @@ class_name LongPressButton
 
 signal long_pressed
 
-const BUTTON_THEME: Theme = preload("./long_press_button.tres")
+const BUTTON_THEME: Theme = preload("./../theme/long_press_button.tres")
 
 @export_range(0.2, 1.0, 0.1) var hold_time: float = 0.5
 @export var pressing_loop: bool = false
@@ -13,7 +13,7 @@ var is_long_pressing: bool
 
 var _tween_progress: Tween
 
-var _flash_light: ColorRect
+var _flash_light: Panel
 var _progress_bar: ProgressBar
 
 
@@ -29,8 +29,7 @@ func _init() -> void:
 
 
 func _build_node_structure() -> void:
-	_flash_light = ColorRect.new()
-	_flash_light.color = Color(1.0, 1.0, 1.0, 0.5)
+	_flash_light = Panel.new()
 	_flash_light.z_index = 1
 	_flash_light.modulate.a = 0.0
 	_flash_light.mouse_filter = Control.MOUSE_FILTER_IGNORE

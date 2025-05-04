@@ -1,6 +1,6 @@
-[gd_resource type="StyleBox" script_class="StyleBoxDialogVoice" load_steps=2 format=3 uid="uid://0rs3rhi4gja5"]
+[gd_resource type="StyleBox" script_class="StyleBoxDialogVoice" load_steps=2 format=3 uid="uid://lwqndx4dff5p"]
 
-[ext_resource type="Script" uid="uid://d2ptvrxaxcjov" path="res://addons/dialogue_manager/script/stylebox/stylebox_dialog_voice.gd" id="1_bsjhf"]
+[ext_resource type="Script" uid="uid://d2ptvrxaxcjov" path="res://addons/dialogue_manager/script/stylebox/stylebox_dialog_voice.gd" id="1_stkwf"]
 
 [resource]
 resource_local_to_scene = false
@@ -9,10 +9,10 @@ content_margin_left = 24.0
 content_margin_top = 8.0
 content_margin_right = 24.0
 content_margin_bottom = 8.0
-script = ExtResource("1_bsjhf")
+script = ExtResource("1_stkwf")
 corner_radius = 12.0
 corner_point_count = 8
 border_width = 1
 solid_color = Color(1, 1, 1, 0.25098)
-border_color = Color(1, 1, 1, 1)
+border_color = Color(1, 1, 1, 0)
 metadata/_custom_type_script = "uid://d2ptvrxaxcjov"
