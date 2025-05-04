@@ -2,7 +2,17 @@ extends CanvasLayer
 class_name DialogueLayer
 
 
+enum DialogueMode
+{
+	NORMAL = 0,
+	AUTO = 1,
+	SKIP = 2,
+}
+
 @export var enable: bool
+
+#region inner props
+var _dialogue_mode: DialogueMode
 
 var _processing_label: DialogueLabel
 var _dialogue_labels: Dictionary[StringName, DialogueLabel]
@@ -19,12 +29,15 @@ var _use_label_bubble: bool
 var _break_tweening: bool
 var _ms_per_char: float
 var _auto_advance_time: float
+#endregion
 
 var _dialogue_manager: Dialogue:
 	get: return Dialogue
 
 
 func _init() -> void:
+	_dialogue_mode = 0
+
 	_popup_position = _get_screen_center()
 	_popup_direction = 0
 	_use_label_bubble = true
@@ -46,14 +59,15 @@ func _on_accept_pressed() -> void:
 
 	get_viewport().set_input_as_handled()
 
-	if _processing_label != null && _processing_label.visible_characters_processing():
+	if _processing_label != null && _processing_label.line_processing():
 		if _break_tweening:
-			_processing_label.break_visible_characters_process()
+			_processing_label.break_line_process()
 		return
 
 	_dialogue_manager.get_next_line()
 
 
+#region inner method
 func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 	if not line.is_type_text(): return
 	var label_name: StringName = line.get_data("name", "")
@@ -101,8 +115,10 @@ func _refresh_direction(postion: Vector2) -> void:
 	else:
 		if postion.y < screen_center.y: _popup_direction = 3
 		if postion.y > screen_center.y: _popup_direction = 4
+#endregion
 
 
+#region dialogue label method
 func set_popup_position(value: Vector2) -> void:
 	_popup_position = value
 
@@ -127,36 +143,6 @@ func set_popup_parent(
 	else:
 		_popup_position = _get_screen_center() + position_offset
 		_refresh_direction(_popup_position)
-
-
-func set_speaking_character(
-	value: Variant,
-	position_offset: Vector2 = Vector2.ZERO,
-	) -> void:
-
-	if value is String or value is StringName:
-		value = get_character(value) as Character
-
-	if value is not Character: value = null
-	if _speaking_character == value: return
-
-	if _speaking_character != null:
-		_speaking_character.change_brightness(0.5)
-		_speaking_character.change_texture_offset(Vector2.ZERO)
-
-	_speaking_character = value
-
-	if _speaking_character != null:
-		_speaking_character.change_brightness(1.0)
-		_speaking_character.change_texture_offset(Vector2(0.0, -36.0))
-
-	# 自动切换至角色指定弹出节点
-	if _speaking_character != null:
-		var final_position: Vector2 = Vector2(0.0, 450.0) + position_offset
-		set_popup_parent(_speaking_character, final_position)
-		_refresh_direction(_speaking_character.global_position + final_position)
-	else:
-		set_popup_parent(null, position_offset)
 
 
 func popup_dialogue_label(line: DialogueLine, label_name: StringName = "") -> DialogueLabel:
@@ -199,6 +185,38 @@ func close_dialogue_label(label_name: StringName = "") -> void:
 	if target_label == null: return
 	target_label.get_parent().remove_child(target_label)
 	target_label.queue_free()
+#endregion
+
+
+#region character method
+func set_speaking_character(
+	value: Variant,
+	position_offset: Vector2 = Vector2.ZERO,
+	) -> void:
+
+	if value is String or value is StringName:
+		value = get_character(value) as Character
+
+	if value is not Character: value = null
+	if _speaking_character == value: return
+
+	if _speaking_character != null:
+		_speaking_character.change_brightness(0.5)
+		_speaking_character.change_texture_offset(Vector2.ZERO)
+
+	_speaking_character = value
+
+	if _speaking_character != null:
+		_speaking_character.change_brightness(1.0)
+		_speaking_character.change_texture_offset(Vector2(0.0, -36.0))
+
+	# 自动切换至角色指定弹出节点
+	if _speaking_character != null:
+		var final_position: Vector2 = Vector2(0.0, 450.0) + position_offset
+		set_popup_parent(_speaking_character, final_position)
+		_refresh_direction(_speaking_character.global_position + final_position)
+	else:
+		set_popup_parent(null, position_offset)
 
 
 func add_character(
@@ -252,3 +270,22 @@ func call_delay(object: Object, method: StringName, arg_array: Variant = []) -> 
 	if not object.has_method(method): return
 	if arg_array is not Array: arg_array = [arg_array]
 	await object.callv(method, arg_array)
+#endregion
+
+
+#region dialogue mode method
+func goto_mode(mode: DialogueMode) -> void:
+	if _dialogue_mode == mode: return
+	get_viewport().set_input_as_handled()
+	_dialogue_mode = mode
+
+
+func change_mode_auto() -> void:
+	if _dialogue_mode == DialogueMode.AUTO: goto_mode(0)
+	else: goto_mode(1)
+
+
+func change_mode_skip() -> void:
+	if _dialogue_mode == DialogueMode.SKIP: goto_mode(0)
+	else: goto_mode(2)
+#endregion

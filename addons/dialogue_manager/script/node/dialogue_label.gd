@@ -14,7 +14,8 @@ var _target_characters: int
 var _ms_per_char: float
 var _pause_between_parts: float
 
-var _characters_timer: Timer
+var _pause_timer: LiteTimer
+var _characters_timer: LiteTimer
 
 var _dialogue_line_tweening: DialogueLine
 
@@ -38,8 +39,10 @@ func _init(
 	_ms_per_char = clampf(ms_per_char, 0.0, ms_per_char)
 	_pause_between_parts = clampf(pause_between_parts, 0.0, pause_between_parts)
 
-	_characters_timer = Timer.new()
-	_characters_timer.one_shot = true
+	_pause_timer = LiteTimer.new()
+	add_child(_pause_timer)
+
+	_characters_timer = LiteTimer.new()
 	add_child(_characters_timer)
 
 
@@ -78,13 +81,13 @@ func _line_process(line: DialogueLine) -> void:
 			TYPE_CALLABLE:
 				await text_part.call()
 			TYPE_INT, TYPE_FLOAT:
-				await get_tree().create_timer(text_part).timeout
+				await _pause_timer.count_down(text_part)
 			TYPE_STRING, TYPE_STRING_NAME:
 				_target_characters += strip_bbcode(text_part).length()
 				await _visible_characters_process(_target_characters)
 
 		if part_index == array_size: break
-		await get_tree().create_timer(_pause_between_parts).timeout
+		await _pause_timer.count_down(_pause_between_parts)
 
 	dialogue_line_showed.emit(_dialogue_line_tweening)
 	_dialogue_line_tweening = null
@@ -100,17 +103,18 @@ func _visible_characters_process(chars: int) -> void:
 	while visible_characters != chars:
 		visible_characters = move_toward(visible_characters, chars, 1.0)
 		if visible_characters == chars: break
-		_characters_timer.start(sec_per_char)
-		await _characters_timer.timeout
+		await _characters_timer.count_down(sec_per_char)
 	character_process_finished.emit()
 
 
-func visible_characters_processing() -> bool:
-	return not _characters_timer.is_stopped()
+func line_processing() -> bool:
+	return _pause_timer.is_running or _characters_timer.is_running
 
 
-func break_visible_characters_process() -> void:
-	if _characters_timer.is_stopped(): return
-	visible_characters = _target_characters
-	_characters_timer.stop()
-	_characters_timer.timeout.emit()
+func break_line_process() -> void:
+	if _pause_timer.is_running:
+		_pause_timer.break_count_down()
+
+	if _characters_timer.is_running:
+		visible_characters = _target_characters
+		_characters_timer.break_count_down()
