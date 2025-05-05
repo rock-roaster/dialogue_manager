@@ -26,9 +26,14 @@ func grab_button_focus(index: int) -> void:
 	button_array[index].grab_focus.call_deferred()
 
 
-func add_button(button: Button, callable: Callable = Callable()) -> Button:
+func add_button(
+	button: Button,
+	callable: Callable = Callable(),
+	close_after_press: bool = one_shot,
+	) -> Button:
+
 	if callable: button.pressed.connect(callable)
-	if one_shot: button.pressed.connect(exit_option_container)
+	if close_after_press: button.pressed.connect(exit_option_container)
 	button_array.append(button)
 	add_child(button)
 	return button
@@ -37,10 +42,11 @@ func add_button(button: Button, callable: Callable = Callable()) -> Button:
 func add_long_press_button(
 	button: LongPressButton,
 	callable: Callable = Callable(),
+	close_after_press: bool = one_shot,
 	) -> LongPressButton:
 
 	if callable: button.long_pressed.connect(callable)
-	if one_shot: button.long_pressed.connect(exit_option_container)
+	if close_after_press: button.long_pressed.connect(exit_option_container)
 	button_array.append(button)
 	add_child(button)
 	return button

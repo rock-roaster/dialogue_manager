@@ -2,16 +2,15 @@ extends Control
 class_name OptionManager
 
 
-const OptionContainer := preload("./option_container.gd")
-
+const OptionContainer: = preload("./option_container.gd")
 const OPTION_THEME: Theme = preload("./theme/option_theme.tres")
 
 @export var base_container: Container
 @export var h_size_flags: SizeFlags = SIZE_EXPAND_FILL
 @export var text_alignment: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT
 
-var current_container: OptionContainer
-var current_previous_focus: Control
+var _current_container: OptionContainer
+var _container_info_list: Array[Dictionary]
 
 
 func _init() -> void:
@@ -24,13 +23,15 @@ func _init() -> void:
 
 func add_option(can_exit: bool = true, one_shot: bool = false) -> OptionContainer:
 	var new_container: OptionContainer = _get_option_container(can_exit, one_shot)
-	if current_container != null: current_container.hide()
-	current_container = new_container
+	_add_container_list_data()
+	if _current_container != null: _current_container.hide()
 	add_child(new_container)
+
+	_current_container = new_container
 	return new_container
 
 
-func add_main_option(one_shot: bool = false) -> OptionContainer:
+func add_main_option(one_shot: bool = true) -> OptionContainer:
 	return add_option(false, one_shot)
 
 
@@ -38,44 +39,66 @@ func add_sub_option(one_shot: bool = true) -> OptionContainer:
 	return add_option(true, one_shot)
 
 
-func add_button(text: String, callable: Callable = Callable()) -> Button:
+func add_button(
+	text: String,
+	callable: Callable = Callable(),
+	one_shot: bool = _current_container.one_shot,
+	) -> Button:
+
+	if _current_container == null: return
 	var new_button: Button = _get_default_button()
 	new_button.text = text
 	new_button.alignment = text_alignment
 	new_button.size_flags_horizontal = h_size_flags
-	current_container.add_button(new_button, callable)
+	_current_container.add_button(new_button, callable, one_shot)
 	return new_button
 
 
-func add_custom_button(text: String, callable: Callable = Callable()) -> CustomButton:
+func add_custom_button(
+	text: String,
+	callable: Callable = Callable(),
+	one_shot: bool = _current_container.one_shot,
+	) -> CustomButton:
+
+	if _current_container == null: return
 	var new_button: CustomButton = CustomButton.new()
 	new_button.text = text
 	new_button.alignment = text_alignment
 	new_button.size_flags_horizontal = h_size_flags
-	current_container.add_button(new_button, callable)
+	_current_container.add_button(new_button, callable)
 	return new_button
 
 
-func add_long_press_button(text: String, callable: Callable = Callable()) -> LongPressButton:
+func add_long_press_button(
+	text: String,
+	callable: Callable = Callable(),
+	one_shot: bool = _current_container.one_shot,
+	) -> LongPressButton:
+
+	if _current_container == null: return
 	var new_button: LongPressButton = LongPressButton.new()
 	new_button.text = text
 	new_button.alignment = text_alignment
 	new_button.size_flags_horizontal = h_size_flags
-	current_container.add_long_press_button(new_button, callable)
+	_current_container.add_long_press_button(new_button, callable)
 	return new_button
 
 
 func set_button_horizontal() -> void:
-	var button_array: Array[Button] = current_container.button_array
-	if !button_array: return
+	if _current_container == null: return
+	if _current_container.button_array.is_empty(): return
+
+	var button_array: Array[Button] = _current_container.button_array
 	button_array[0].focus_neighbor_left = button_array[-1].get_path()
 	button_array[-1].focus_neighbor_right = button_array[0].get_path()
 	button_array[0].grab_focus.call_deferred()
 
 
 func set_button_vertical() -> void:
-	var button_array: Array[Button] = current_container.button_array
-	if !button_array: return
+	if _current_container == null: return
+	if _current_container.button_array.is_empty(): return
+
+	var button_array: Array[Button] = _current_container.button_array
 	button_array[0].focus_neighbor_top = button_array[-1].get_path()
 	button_array[-1].focus_neighbor_bottom = button_array[0].get_path()
 	button_array[0].grab_focus.call_deferred()
@@ -83,17 +106,20 @@ func set_button_vertical() -> void:
 
 func reset_option() -> void:
 	for child in get_children(): child.queue_free()
-	current_container = null
+	_container_info_list.clear()
+	_current_container = null
 
 
 func hide_option() -> void:
-	current_previous_focus = get_viewport().gui_get_focus_owner()
-	current_container.hide()
+	if _current_container == null: return
+	_add_container_list_data()
+	_current_container.hide()
+	_current_container = null
 
 
 func show_option() -> void:
-	current_container.show()
-	_grab_previous_focus(current_previous_focus)
+	if _current_container == null && not _container_info_list.is_empty():
+		_on_container_exited()
 
 
 func _get_default_button() -> Button:
@@ -109,17 +135,15 @@ func _get_option_container(
 	one_shot: bool = false,
 	) -> OptionContainer:
 
-	var new_container: Container = base_container.duplicate()\
-		if base_container != null else _get_default_container()
+	var new_container: Container = base_container.duplicate() if (
+		base_container != null) else _get_default_container()
 	new_container.set_script(OptionContainer)
 	new_container = new_container as OptionContainer
 
 	new_container.can_exit = can_exit
 	new_container.one_shot = one_shot
 
-	var option_focus: Control = get_viewport().gui_get_focus_owner()
-	new_container.tree_exited.connect(
-		_on_option_return.bind(current_container, option_focus))
+	new_container.tree_exited.connect(_on_container_exited)
 	return new_container
 
 
@@ -132,10 +156,25 @@ func _get_default_container() -> VBoxContainer:
 	return new_container
 
 
-func _on_option_return(option: OptionContainer, focus: Control) -> void:
-	current_container = option
-	if current_container != null: current_container.show()
-	_grab_previous_focus(focus)
+func _add_container_list_data() -> Dictionary:
+	var current_focus: Control = get_viewport().gui_get_focus_owner()
+	var list_info: Dictionary = {
+		"previous_container": _current_container,
+		"previous_focus": current_focus,
+	}
+	_container_info_list.append(list_info)
+	return list_info
+
+
+func _on_container_exited() -> void:
+	var last_info: Dictionary = _container_info_list.pop_back()
+	var previous_container: OptionContainer = last_info.get("previous_container")
+	var previous_focus: Control = last_info.get("previous_focus")
+
+	if previous_container != null: previous_container.show()
+	_grab_previous_focus(previous_focus)
+
+	_current_container = previous_container
 
 
 func _grab_previous_focus(focus: Control) -> void:
