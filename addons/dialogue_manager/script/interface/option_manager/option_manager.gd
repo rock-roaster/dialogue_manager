@@ -114,7 +114,7 @@ func show_option() -> void:
 
 func _get_default_button() -> Button:
 	var new_button: Button = Button.new()
-	new_button.custom_minimum_size.x = 480.0
+	new_button.custom_minimum_size.x = size.x * 0.25
 	new_button.mouse_default_cursor_shape = CURSOR_POINTING_HAND
 	new_button.mouse_entered.connect(new_button.grab_focus)
 	return new_button
@@ -139,7 +139,7 @@ func _get_option_container(
 
 func _get_default_container() -> VBoxContainer:
 	var new_container: VBoxContainer = VBoxContainer.new()
-	new_container.custom_minimum_size.x = 480.0
+	new_container.custom_minimum_size.x = size.x * 0.25
 	new_container.grow_vertical = Control.GROW_DIRECTION_BOTH
 	new_container.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	new_container.set_anchors_preset(Control.PRESET_CENTER, true)
