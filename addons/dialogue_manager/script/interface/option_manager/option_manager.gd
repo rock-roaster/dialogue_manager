@@ -2,7 +2,7 @@ extends Control
 class_name OptionManager
 
 
-const OptionContainer: = preload("./option_container.gd")
+const OptionContainer: Script = preload("./option_container.gd")
 const OPTION_THEME: Theme = preload("./theme/option_theme.tres")
 
 @export var base_container: Container
@@ -86,22 +86,12 @@ func add_long_press_button(
 
 func set_button_horizontal() -> void:
 	if _current_container == null: return
-	if _current_container.button_array.is_empty(): return
-
-	var button_array: Array[Button] = _current_container.button_array
-	button_array[0].focus_neighbor_left = button_array[-1].get_path()
-	button_array[-1].focus_neighbor_right = button_array[0].get_path()
-	button_array[0].grab_focus.call_deferred()
+	_current_container.set_button_horizontal()
 
 
 func set_button_vertical() -> void:
 	if _current_container == null: return
-	if _current_container.button_array.is_empty(): return
-
-	var button_array: Array[Button] = _current_container.button_array
-	button_array[0].focus_neighbor_top = button_array[-1].get_path()
-	button_array[-1].focus_neighbor_bottom = button_array[0].get_path()
-	button_array[0].grab_focus.call_deferred()
+	_current_container.set_button_vertical()
 
 
 func reset_option() -> void:

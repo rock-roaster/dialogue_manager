@@ -46,6 +46,7 @@ func _init() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_accept"): _on_accept_pressed()
+	if event.is_action_pressed(&"ui_cancel"): _goto_mode_normal()
 	if Input.is_key_pressed(KEY_SHIFT): _change_mode_auto()
 	if Input.is_key_pressed(KEY_CTRL): _change_mode_skip()
 
@@ -151,13 +152,17 @@ func _goto_mode_skip() -> void:
 
 
 func _change_mode_auto() -> void:
-	if _dialogue_manager.dialogue_mode == 1: _goto_mode_normal()
-	else: _goto_mode_auto()
+	if (_dialogue_manager.dialogue_mode == 1) or not enable:
+		_goto_mode_normal()
+	else:
+		_goto_mode_auto()
 
 
 func _change_mode_skip() -> void:
-	if _dialogue_manager.dialogue_mode == 2: _goto_mode_normal()
-	else: _goto_mode_skip()
+	if (_dialogue_manager.dialogue_mode == 2) or not enable:
+		_goto_mode_normal()
+	else:
+		_goto_mode_skip()
 #endregion
 
 
