@@ -69,7 +69,6 @@ func _on_dialogue_line_pushed(line: DialogueLine) -> void:
 
 	if line.get_text() != [""]:
 		var new_dialogue_label: DialogueLabel = popup_dialogue_label(line, label_name)
-		new_dialogue_label.skip_mode = _dialogue_manager.dialogue_mode == 2
 		_processing_label = new_dialogue_label
 		_on_dialogue_label_popup(new_dialogue_label)
 		await new_dialogue_label.show_line_text(line)
@@ -89,7 +88,7 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 		_dialogue_manager.get_next_line()
 		return
 
-	if line.get_data("auto_advance", false) or _dialogue_manager.dialogue_mode == 1:
+	if line.get_data("auto_advance", false) or (_dialogue_manager.dialogue_mode == 1):
 		var line_auto_advance_time: float = line.get_data("auto_time", _auto_advance_time)
 		line_auto_advance_time = clampf(line_auto_advance_time, 0.0, line_auto_advance_time)
 		await get_tree().create_timer(line_auto_advance_time).timeout
@@ -135,20 +134,20 @@ func _goto_mode_normal() -> void:
 func _goto_mode_auto() -> void:
 	_goto_mode(1)
 	_dialogue_mode_label.text = "  AUTO"
-	if _processing_label == null:
-		_dialogue_manager.get_next_line()
-	else:
+	if _processing_label != null:
 		_processing_label.skip_mode = false
+	else:
+		_dialogue_manager.get_next_line()
 
 
 func _goto_mode_skip() -> void:
 	_goto_mode(2)
 	_dialogue_mode_label.text = "  SKIP"
-	if _processing_label == null:
-		_dialogue_manager.get_next_line()
-	else:
+	if _processing_label != null:
 		_processing_label.skip_mode = true
 		_processing_label.break_line_process()
+	else:
+		_dialogue_manager.get_next_line()
 
 
 func _change_mode_auto() -> void:
@@ -221,6 +220,7 @@ func popup_dialogue_label(
 			line_pause_between_parts,
 		)
 
+	new_dialogue_label.skip_mode = (_dialogue_manager.dialogue_mode == 2)
 	_dialogue_labels.set(label_name, new_dialogue_label)
 	line_popup_parent.add_child(new_dialogue_label)
 	return new_dialogue_label
