@@ -255,10 +255,6 @@ func add_character(
 	return new_character
 
 
-func get_character(char_name: StringName) -> Character:
-	return _characters.get(char_name, null) as Character
-
-
 func remove_character(char_name: StringName) -> void:
 	if not _characters.has(char_name): return
 	var target_character: Character = _characters.get(char_name) as Character
@@ -267,6 +263,14 @@ func remove_character(char_name: StringName) -> void:
 	if target_character == null: return
 	target_character.get_parent().remove_child(target_character)
 	target_character.queue_free()
+
+
+func register_character(char_name: StringName, character: Character) -> void:
+	_characters.set(char_name, character)
+
+
+func get_character(char_name: StringName) -> Character:
+	return _characters.get(char_name, null) as Character
 
 
 func character_call(
