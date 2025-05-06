@@ -28,8 +28,6 @@ var _dialogue_manager: Dialogue:
 
 
 func _init() -> void:
-	_dialogue_manager.dialogue_mode = 0
-
 	_popup_position = _get_screen_center()
 	_popup_direction = 0
 	_use_label_bubble = true
@@ -38,32 +36,29 @@ func _init() -> void:
 	_ms_per_char = _dialogue_manager.get_setting_value("msec_per_character")
 	_auto_advance_time = _dialogue_manager.get_setting_value("auto_advance_time")
 
-	_dialogue_manager.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
-
 	_dialogue_mode_label = Label.new()
 	_dialogue_mode_label.z_index = 5
 	add_child(_dialogue_mode_label)
 
+	_dialogue_manager.dialogue_mode = 0
+	_dialogue_manager.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_accept"): _on_accept_pressed()
-
-	if Input.is_key_pressed(KEY_SHIFT): change_mode_auto()
-	if Input.is_key_pressed(KEY_CTRL): change_mode_skip()
+	if Input.is_key_pressed(KEY_SHIFT): _change_mode_auto()
+	if Input.is_key_pressed(KEY_CTRL): _change_mode_skip()
 
 
 func _on_accept_pressed() -> void:
 	if not enable: return
 	if _dialogue_manager._dialogue_script_processing == null: return
-
 	get_viewport().set_input_as_handled()
-
 	if _processing_label != null && _processing_label.line_processing():
 		if _break_tweening:
 			_processing_label.break_line_process()
-		return
-
-	_dialogue_manager.get_next_line()
+	else:
+		_dialogue_manager.get_next_line()
 
 
 #region inner method
@@ -120,6 +115,50 @@ func _refresh_direction(postion: Vector2) -> void:
 	else:
 		if postion.y < screen_center.y: _popup_direction = 3
 		if postion.y > screen_center.y: _popup_direction = 4
+#endregion
+
+
+#region dialogue mode method
+func _goto_mode(mode: Dialogue.DialogueMode) -> void:
+	if _dialogue_manager.dialogue_mode == mode: return
+	get_viewport().set_input_as_handled()
+	_dialogue_manager.dialogue_mode = mode
+
+
+func _goto_mode_normal() -> void:
+	_goto_mode(0)
+	_dialogue_mode_label.text = ""
+	if _processing_label != null:
+		_processing_label.skip_mode = false
+
+
+func _goto_mode_auto() -> void:
+	_goto_mode(1)
+	_dialogue_mode_label.text = "  AUTO"
+	if _processing_label == null:
+		_dialogue_manager.get_next_line()
+	else:
+		_processing_label.skip_mode = false
+
+
+func _goto_mode_skip() -> void:
+	_goto_mode(2)
+	_dialogue_mode_label.text = "  SKIP"
+	if _processing_label == null:
+		_dialogue_manager.get_next_line()
+	else:
+		_processing_label.skip_mode = true
+		_processing_label.break_line_process()
+
+
+func _change_mode_auto() -> void:
+	if _dialogue_manager.dialogue_mode == 1: _goto_mode_normal()
+	else: _goto_mode_auto()
+
+
+func _change_mode_skip() -> void:
+	if _dialogue_manager.dialogue_mode == 2: _goto_mode_normal()
+	else: _goto_mode_skip()
 #endregion
 
 
@@ -250,7 +289,7 @@ func add_character(
 	var default_position: Vector2 = _get_screen_center() * Vector2(1.0, 0.33)
 	new_character.position = default_position + position
 
-	_characters.set(char_name, new_character)
+	register_character(char_name, new_character)
 	add_child(new_character)
 	return new_character
 
@@ -280,10 +319,10 @@ func character_call(
 	) -> void:
 
 	var target_character: Character = get_character(char_name)
-	await call_delay(target_character, method, arg_array)
+	await _call_delay(target_character, method, arg_array)
 
 
-func call_delay(
+func _call_delay(
 	object: Object,
 	method: StringName,
 	arg_array: Variant = [],
@@ -293,48 +332,4 @@ func call_delay(
 	if not object.has_method(method): return
 	if arg_array is not Array: arg_array = [arg_array]
 	await object.callv(method, arg_array)
-#endregion
-
-
-#region dialogue mode method
-func goto_mode(mode: Dialogue.DialogueMode) -> void:
-	if _dialogue_manager.dialogue_mode == mode: return
-	get_viewport().set_input_as_handled()
-	_dialogue_manager.dialogue_mode = mode
-
-
-func goto_mode_normal() -> void:
-	goto_mode(0)
-	_dialogue_mode_label.text = ""
-	if _processing_label != null:
-		_processing_label.skip_mode = false
-
-
-func goto_mode_auto() -> void:
-	goto_mode(1)
-	_dialogue_mode_label.text = "  AUTO"
-	if _processing_label == null:
-		_dialogue_manager.get_next_line()
-	else:
-		_processing_label.skip_mode = false
-
-
-func goto_mode_skip() -> void:
-	goto_mode(2)
-	_dialogue_mode_label.text = "  SKIP"
-	if _processing_label == null:
-		_dialogue_manager.get_next_line()
-	else:
-		_processing_label.skip_mode = true
-		_processing_label.break_line_process()
-
-
-func change_mode_auto() -> void:
-	if _dialogue_manager.dialogue_mode == 1: goto_mode_normal()
-	else: goto_mode_auto()
-
-
-func change_mode_skip() -> void:
-	if _dialogue_manager.dialogue_mode == 2: goto_mode_normal()
-	else: goto_mode_skip()
 #endregion
