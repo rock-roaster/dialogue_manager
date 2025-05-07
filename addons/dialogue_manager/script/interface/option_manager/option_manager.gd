@@ -16,7 +16,7 @@ var _container_info_list: Array[Dictionary]
 func _init() -> void:
 	theme = OPTION_THEME
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
-	z_index = 2
+	z_index = 3
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
@@ -64,7 +64,7 @@ func add_custom_button(
 	new_button.text = text
 	new_button.alignment = text_alignment
 	new_button.size_flags_horizontal = h_size_flags
-	_current_container.add_button(new_button, callable)
+	_current_container.add_button(new_button, callable, one_shot)
 	return new_button
 
 
@@ -79,7 +79,7 @@ func add_long_press_button(
 	new_button.text = text
 	new_button.alignment = text_alignment
 	new_button.size_flags_horizontal = h_size_flags
-	_current_container.add_long_press_button(new_button, callable)
+	_current_container.add_long_press_button(new_button, callable, one_shot)
 	return new_button
 
 

@@ -33,7 +33,7 @@ func _init(
 	scroll_active = false
 	autowrap_mode = TextServer.AUTOWRAP_OFF
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
-	z_index = 5
+	z_index = 2
 
 	theme = DIALOGUE_THEME.duplicate()
 	bbcode_enabled = enable_bbcode

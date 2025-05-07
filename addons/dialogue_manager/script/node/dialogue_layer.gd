@@ -37,7 +37,7 @@ func _init() -> void:
 	_auto_advance_time = _dialogue_manager.get_setting_value("auto_advance_time")
 
 	_dialogue_mode_label = Label.new()
-	_dialogue_mode_label.z_index = 5
+	_dialogue_mode_label.z_index = 4
 	add_child(_dialogue_mode_label)
 
 	_dialogue_manager.dialogue_mode = 0
