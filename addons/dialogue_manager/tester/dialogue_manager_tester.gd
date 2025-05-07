@@ -32,4 +32,4 @@ func add_option_02() -> void:
 	option_manager.add_sub_option()
 	option_manager.add_button("返回上级菜单")
 	option_manager.add_button("进入下级菜单", add_option_02, false)
-	option_manager.set_button_vertical()
+	option_manager.set_button_vertical(-1)

@@ -7,7 +7,7 @@ var one_shot: bool = false
 var _button_array: Array[Button]
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree(): return
 	if event.is_action_pressed(&"ui_cancel") && can_exit:
 		exit_option_container()
@@ -48,33 +48,35 @@ func add_long_press_button(
 	add_child(button)
 
 
-func set_button_horizontal() -> void:
-	if _button_array.is_empty(): return
-	var button_head: Button = _button_array[0]
-	var button_back: Button = _button_array[-1]
+func grab_focus_button(index: int) -> void:
+	var array_size: int = _button_array.size()
+	var clamp_index: int = clampi(index, -array_size, array_size-1)
+	_button_array[clamp_index].grab_focus.call_deferred()
 
+
+func set_button_horizontal(index: int = 0) -> void:
+	if _button_array.is_empty(): return
+	var button_back: Button = _button_array.back()
+	var button_front: Button = _button_array.front()
 	var previous_button: Button = button_back
 	for button in _button_array:
-		button.focus_neighbor_top = button_head.get_path()
+		button.focus_neighbor_top = button_front.get_path()
 		button.focus_neighbor_bottom = button_back.get_path()
 		button.focus_neighbor_left = previous_button.get_path()
 		previous_button.focus_neighbor_right = button.get_path()
 		previous_button = button
+	grab_focus_button(index)
 
-	button_head.grab_focus.call_deferred()
 
-
-func set_button_vertical() -> void:
+func set_button_vertical(index: int = 0) -> void:
 	if _button_array.is_empty(): return
-	var button_head: Button = _button_array[0]
-	var button_back: Button = _button_array[-1]
-
+	var button_back: Button = _button_array.back()
+	var button_front: Button = _button_array.front()
 	var previous_button: Button = button_back
 	for button in _button_array:
-		button.focus_neighbor_left = button_head.get_path()
+		button.focus_neighbor_left = button_front.get_path()
 		button.focus_neighbor_right = button_back.get_path()
 		button.focus_neighbor_top = previous_button.get_path()
 		previous_button.focus_neighbor_bottom = button.get_path()
 		previous_button = button
-
-	button_head.grab_focus.call_deferred()
+	grab_focus_button(index)

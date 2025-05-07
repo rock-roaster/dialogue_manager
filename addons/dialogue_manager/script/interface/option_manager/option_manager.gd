@@ -84,14 +84,14 @@ func add_long_press_button(
 	return new_button
 
 
-func set_button_horizontal() -> void:
+func set_button_horizontal(index: int = 0) -> void:
 	if _current_container == null: return
-	_current_container.set_button_horizontal()
+	_current_container.set_button_horizontal(index)
 
 
-func set_button_vertical() -> void:
+func set_button_vertical(index: int = 0) -> void:
 	if _current_container == null: return
-	_current_container.set_button_vertical()
+	_current_container.set_button_vertical(index)
 
 
 func reset_option() -> void:
