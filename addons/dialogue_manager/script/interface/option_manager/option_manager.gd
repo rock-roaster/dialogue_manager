@@ -15,7 +15,6 @@ var _container_info_list: Array[Dictionary]
 
 func _init() -> void:
 	theme = OPTION_THEME
-
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
 	z_index = 2
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -160,13 +159,14 @@ func _on_container_exited() -> void:
 	var last_info: Dictionary = _container_info_list.pop_back()
 	var previous_container: OptionContainer = last_info.get("previous_container")
 	var previous_focus: Control = last_info.get("previous_focus")
-
-	if previous_container != null: previous_container.show()
+	if previous_container != null:
+		previous_container.show()
 	_grab_previous_focus(previous_focus)
-
 	_current_container = previous_container
 
 
 func _grab_previous_focus(focus: Control) -> void:
-	if is_instance_valid(focus) && focus.is_visible_in_tree():
-		if focus.focus_mode != Control.FOCUS_NONE: focus.grab_focus.call_deferred()
+	if is_instance_valid(focus)\
+	&& focus.is_visible_in_tree()\
+	&& focus.focus_mode != Control.FOCUS_NONE:
+		focus.grab_focus.call_deferred()
