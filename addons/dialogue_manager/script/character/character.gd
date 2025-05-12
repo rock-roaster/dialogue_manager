@@ -106,10 +106,6 @@ func _ready() -> void:
 func set_character_data(char_data: CharacterData) -> void:
 	if char_data == null: return
 	character_data = char_data
-
-	character_data.character_dir = character_data.resource_path.get_base_dir()
-	character_data.file_extension = character_data.body_texture.resource_path.get_extension()
-
 	_audio_player.set_pitch_scale(char_data.voice_pitch)
 	_texture_rect_dict["body"].set_texture(char_data.body_texture)
 	change_expression(expression)

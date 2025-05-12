@@ -11,10 +11,11 @@
 
 [resource]
 script = ExtResource("8_q4255")
+character_dir = ""
+file_extension = "png"
 body_texture = ExtResource("1_mej6t")
-file_suffix = "png"
 voice_pitch = 1.0
 eyes_blink = ExtResource("2_udhac")
-eyes_close = Array[CompressedTexture2D]([ExtResource("3_fmpwe"), ExtResource("4_k6t6g")])
+eyes_close = Array[Texture2D]([ExtResource("3_fmpwe"), ExtResource("4_k6t6g")])
 mouth_connect = ExtResource("5_y0j75")
-mouth_speaking = Array[CompressedTexture2D]([ExtResource("6_4oj0x"), ExtResource("7_0b71x")])
+mouth_speaking = Array[Texture2D]([ExtResource("6_4oj0x"), ExtResource("7_0b71x")])
