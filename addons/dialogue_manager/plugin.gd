@@ -3,16 +3,15 @@ extends EditorPlugin
 
 
 const SYSTEM_NAME: String = "Dialogue"
-const SYSTEM_PATH: String = "res://addons/dialogue_manager/dialogue_manager.gd"
 
-const SETTING_SCRIPT: Script = preload("res://addons/dialogue_manager/setting.gd")
+const SETTING_SCRIPT: Script = preload("setting.gd")
 const SETTING_INFO_DICT: Dictionary[StringName, Dictionary] = SETTING_SCRIPT.SETTING_INFO_DICT
 
 
 ## 在插件运行时添加项目设置
 func _enter_tree() -> void:
 	_add_project_settings()
-	add_autoload_singleton(SYSTEM_NAME, SYSTEM_PATH)
+	add_autoload_singleton(SYSTEM_NAME, "singleton.gd")
 	ProjectSettings.save()
 
 
@@ -26,7 +25,6 @@ func _disable_plugin() -> void:
 	remove_autoload_singleton(SYSTEM_NAME)
 	_remove_project_settings()
 	ProjectSettings.save()
-	#_remove_template()
 
 
 ## 添加配置脚本中的设置项
@@ -61,7 +59,6 @@ func _remove_setting_dict(info_dict: Dictionary) -> void:
 
 func _add_template() -> void:
 	copy_dir("res://addons/dialogue_manager/script_templates", "res://script_templates")
-	#hide_dir("res://script_templates")
 	EditorInterface.get_resource_filesystem().scan()
 
 

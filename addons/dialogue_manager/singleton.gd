@@ -8,7 +8,7 @@ enum DialogueMode
 	SKIP = 2,
 }
 
-const SETTING_SCRIPT: Script = preload("res://addons/dialogue_manager/setting.gd")
+const SETTING_SCRIPT: Script = preload("setting.gd")
 
 var dialogue_mode: DialogueMode
 
