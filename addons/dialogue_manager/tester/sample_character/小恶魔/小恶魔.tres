@@ -12,7 +12,7 @@
 [resource]
 script = ExtResource("8_q4255")
 character_dir = ""
-file_extension = "png"
+file_extension = ""
 body_texture = ExtResource("1_mej6t")
 voice_pitch = 1.0
 eyes_blink = ExtResource("2_udhac")

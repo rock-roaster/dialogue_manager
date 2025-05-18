@@ -26,7 +26,7 @@ func _disable_plugin() -> void:
 	remove_autoload_singleton(SYSTEM_NAME)
 	_remove_project_settings()
 	ProjectSettings.save()
-	_remove_template()
+	#_remove_template()
 
 
 ## 添加配置脚本中的设置项
@@ -61,11 +61,13 @@ func _remove_setting_dict(info_dict: Dictionary) -> void:
 
 func _add_template() -> void:
 	copy_dir("res://addons/dialogue_manager/script_templates", "res://script_templates")
-	hide_dir("res://script_templates")
+	#hide_dir("res://script_templates")
+	EditorInterface.get_resource_filesystem().scan()
 
 
 func _remove_template() -> void:
 	remove_dir("res://script_templates")
+	EditorInterface.get_resource_filesystem().scan()
 
 
 func copy_dir(from: String, to: String) -> void:
