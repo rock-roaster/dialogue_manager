@@ -13,8 +13,10 @@ enum PopupDirection {
 	DOWN = 4,   ## 向下弹出
 }
 
-const DIALOGUE_BUBBLE_VOICE: StyleBoxDialogVoice = preload("res://addons/dialogue_manager/theme/stylebox/stylebox_dialog_voice.tres")
-const DIALOGUE_BUBBLE_SPEAK: StyleBoxDialogSpeak = preload("res://addons/dialogue_manager/theme/stylebox/stylebox_dialog_speak.tres")
+const DIALOGUE_BUBBLE_VOICE: Script = preload(
+	"res://addons/dialogue_manager/script/stylebox/stylebox_dialog_voice.gd")
+const DIALOGUE_BUBBLE_SPEAK: Script = preload(
+	"res://addons/dialogue_manager/script/stylebox/stylebox_dialog_speak.gd")
 
 const POPUP_OFFSET: Dictionary[int, Dictionary] = {
 	PopupDirection.NONE: {
@@ -81,8 +83,8 @@ func _refresh_popup_offset() -> void:
 
 
 func _match_popup_bubble() -> void:
-	var target_stylebox: StyleBoxDialogVoice = DIALOGUE_BUBBLE_VOICE.duplicate()\
-		if _popup_direction == PopupDirection.NONE else DIALOGUE_BUBBLE_SPEAK.duplicate()
+	var target_stylebox: StyleBoxDialogVoice = DIALOGUE_BUBBLE_VOICE.new()\
+		if _popup_direction == PopupDirection.NONE else DIALOGUE_BUBBLE_SPEAK.new()
 	match _popup_direction:
 		PopupDirection.LEFT:
 			target_stylebox.arrow_side = StyleBoxDialogSpeak.ArrowSide.RIGHT

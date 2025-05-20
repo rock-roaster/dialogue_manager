@@ -2,8 +2,7 @@ extends TextureRect
 class_name Background
 
 
-const BLUR_SHADER: ShaderMaterial = preload(
-	"res://addons/dialogue_manager/theme/shader/simple_blur.tres")
+const BLUR_SHADER: ShaderMaterial = preload("simple_blur.tres")
 
 var _blur_rect: ColorRect
 var _tween_blur: Tween
@@ -24,6 +23,7 @@ func _build_node_structure() -> void:
 	_blur_rect = ColorRect.new()
 	_blur_rect.set_anchors_preset(Control.PRESET_FULL_RECT, true)
 	_blur_rect.z_index = 1
+
 	_blur_rect.material = BLUR_SHADER
 	_blur_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_blur_rect)
