@@ -6,7 +6,7 @@ extends Node
 
 func _ready() -> void:
 	Dialogue.load_dialogue_script(
-		"res://tester/sample_script.gd",
+		"res://testers/dialogue_manager_tester/sample_script.gd",
 		{
 			"dialogue_layer": $DialogueLayer,
 			"background": $DialogueLayer/Background,

@@ -2,12 +2,12 @@ extends DialogueScript
 
 
 func _dialogue_process() -> void:
-	var char_path_01: String = "res://tester/sample_character/帕秋莉/帕秋莉.tres"
-	var char_path_02: String = "res://tester/sample_character/小恶魔/小恶魔.tres"
+	var char_path_01: String = "res://testers/dialogue_manager_tester/sample_character/帕秋莉/帕秋莉.tres"
+	var char_path_02: String = "res://testers/dialogue_manager_tester/sample_character/小恶魔/小恶魔.tres"
 
-	var background_01: String = "res://tester/background/background_01.png"
-	var background_02: String = "res://tester/background/background_02.png"
-	var background_03: String = "res://tester/background/background_03.png"
+	var background_01: String = "res://testers/dialogue_manager_tester/background/background_01.png"
+	var background_02: String = "res://testers/dialogue_manager_tester/background/background_02.png"
+	var background_03: String = "res://testers/dialogue_manager_tester/background/background_03.png"
 
 	System.resource_manager.preload_resource(char_path_01)
 	System.resource_manager.preload_resource(char_path_02)
