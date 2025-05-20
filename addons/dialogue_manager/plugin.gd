@@ -75,6 +75,7 @@ func copy_dir(from: String, to: String) -> void:
 	if not to.ends_with("/"): to += "/"
 	dir_access.make_dir_recursive(to)
 	for file_name in dir_access.get_files():
+		if file_name.ends_with(".uid"): continue
 		dir_access.copy(from + file_name, to + file_name)
 	for dir_name in dir_access.get_directories():
 		copy_dir(from + dir_name, to + dir_name)
