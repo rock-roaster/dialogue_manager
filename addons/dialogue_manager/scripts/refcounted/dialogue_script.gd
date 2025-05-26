@@ -2,22 +2,30 @@ extends RefCounted
 class_name DialogueScript
 
 
+var _line_index: int = -1
+
 var _dialogue_data: Dictionary[StringName, Variant]
 var _dialogue_lines: Array[DialogueLine]
-var _dialogue_manager: Dialogue = Dialogue
+
+var _dialogue_manager: Dialogue:
+	get: return Dialogue
 
 
 func _init(data: Dictionary[StringName, Variant] = {}) -> void:
 	_dialogue_data = data
+	_ready()
+
 	_dialogue_lines.clear()
-	_dialogue_process()
+	_dialogue_line_import()
 	_dialogue_lines.reverse()
 	# 当数据量达到一定程度后，应使用pop_back而非pop_front保证运行速度，
 	# 所以将数组颠倒过来后进行提取。
 
 
-func _dialogue_process() -> void:
-	pass
+func _ready() -> void: pass
+func _dialogue_line_import() -> void: pass
+func _dialogue_line_process(line: DialogueLine) -> void: pass
+func _dialogue_index_process(index: int) -> void: pass
 
 
 func get_data(key: StringName, default: Variant = null) -> Variant:
@@ -26,6 +34,9 @@ func get_data(key: StringName, default: Variant = null) -> Variant:
 
 func get_next_line() -> DialogueLine:
 	var next_line: DialogueLine = _dialogue_lines.pop_back()
+	_line_index += 1
+	_dialogue_line_process(next_line)
+	_dialogue_index_process(_line_index)
 	return next_line
 
 

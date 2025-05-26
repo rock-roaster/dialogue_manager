@@ -1,15 +1,6 @@
 extends Node
 
 
-enum DialogueMode
-{
-	NORMAL = 0,
-	AUTO = 1,
-	SKIP = 2,
-}
-
-const SETTING_SCRIPT: Script = preload("setting.gd")
-
 var dialogue_mode: DialogueMode
 
 var _dialogue_line_processing: DialogueLine
@@ -20,6 +11,15 @@ var _can_push_dialogue_line: bool
 var _dialogue_line_history: Array[DialogueLine]
 var _dialogue_line_history_maximum: int = get_setting_value("log_history")
 
+const Setting: Script = preload("setting.gd")
+
+enum DialogueMode
+{
+	NORMAL = 0,
+	AUTO = 1,
+	SKIP = 2,
+}
+
 signal dialogue_line_pushed(line: DialogueLine)
 signal dialogue_line_finished(line: DialogueLine)
 
@@ -28,7 +28,7 @@ signal dialogue_script_finished(script: DialogueScript)
 
 
 func get_setting_value(key: StringName, default: Variant = null) -> Variant:
-	return SETTING_SCRIPT.get_setting_value(key, default)
+	return Setting.get_setting_value(key, default)
 
 
 func _init() -> void:
@@ -105,6 +105,7 @@ func _add_history_line(line: DialogueLine) -> void:
 
 func _dialogue_line_process_callable(line: DialogueLine) -> void:
 	var line_callable: Callable = line.get_callable()
+
 	var line_arg_array: Array = line.get_arg_array()
 	var line_await: bool = line.get_data("await_call", false)
 	var line_auto_advance: bool = line.get_data("auto_advance", true)

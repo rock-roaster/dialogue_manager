@@ -44,7 +44,7 @@ func _init() -> void:
 	_dialogue_manager.dialogue_line_pushed.connect(_on_dialogue_line_pushed)
 
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_accept"): _on_accept_pressed()
 	if event.is_action_pressed(&"ui_cancel"): _goto_mode_normal()
 
@@ -93,7 +93,7 @@ func _on_dialogue_line_finished(line: DialogueLine) -> void:
 	if line.get_data("auto_advance", false) or (_dialogue_manager.dialogue_mode == 1):
 		var line_auto_advance_time: float = line.get_data("auto_time", _auto_advance_time)
 		line_auto_advance_time = clampf(line_auto_advance_time, 0.0, line_auto_advance_time)
-		await get_tree().create_timer(line_auto_advance_time).timeout
+		await _dialogue_manager.get_tree().create_timer(line_auto_advance_time).timeout
 
 		_dialogue_manager._finish_line()
 		_dialogue_manager.get_next_line()

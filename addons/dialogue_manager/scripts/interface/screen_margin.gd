@@ -23,15 +23,18 @@ func _build_node_structure() -> void:
 
 	top_bar = ColorRect.new()
 	top_bar.color = Color.BLACK
+	top_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	bottom_bar = ColorRect.new()
 	bottom_bar.color = Color.BLACK
+	bottom_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	add_child(top_bar)
 	add_child(padding_control)
 	add_child(bottom_bar)
 
 	var bar_panel: PanelContainer = PanelContainer.new()
+	bar_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bar_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	bar_panel.add_theme_stylebox_override(&"panel", StyleBoxEmpty.new())
 

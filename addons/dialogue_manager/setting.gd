@@ -1,7 +1,7 @@
 extends RefCounted
 
 
-const SETTING_DIALOGUE: String = "dialogue_manager/"
+const SETTING_DIALOGUE: String = "dialogue_manager/setting/"
 
 const SETTING_INFO_DICT: Dictionary[StringName, Dictionary] = {
 	"log_history":

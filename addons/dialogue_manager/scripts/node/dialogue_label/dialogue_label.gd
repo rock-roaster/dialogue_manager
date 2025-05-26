@@ -35,6 +35,7 @@ func _init(
 	visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	z_index = 2
 
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	theme = DIALOGUE_THEME.duplicate()
 	bbcode_enabled = enable_bbcode
 

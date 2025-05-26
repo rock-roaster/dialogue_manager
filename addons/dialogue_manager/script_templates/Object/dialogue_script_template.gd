@@ -3,7 +3,13 @@
 extends DialogueScript
 
 
-func _dialogue_process() -> void:
-	add_text("Hello World!")
-	add_timer(0.5)
-	add_callable(func(): print("Amigo!"))
+func _dialogue_line_import() -> void:
+	pass
+
+
+func _dialogue_line_process(line: DialogueLine) -> void:
+	pass
+
+
+func _dialogue_index_process(index: int) -> void:
+	pass

@@ -12,8 +12,8 @@ var _tween_brightness: Tween
 func _init() -> void:
 	expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-
 	set_anchors_preset(Control.PRESET_FULL_RECT, true)
+
 	z_index = -1
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_node_structure()

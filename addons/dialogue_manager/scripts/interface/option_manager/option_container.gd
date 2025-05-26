@@ -18,14 +18,27 @@ func exit_option_container() -> void:
 	queue_free()
 
 
+func get_button(index: int) -> Button:
+	return _button_array[index]
+
+
+func get_callable_pack(callable: Callable) -> Dictionary:
+	return MethodTools.get_callable_pack(callable)
+
+
+func call_callable_pack(pack: Dictionary, bind: Array = []) -> bool:
+	return await MethodTools.call_callable_pack(pack, bind)
+
+
 func add_button(
 	button: Button,
 	callable: Callable = Callable(),
 	close_after_press: bool = one_shot,
 	) -> void:
 
-	if callable.is_valid():
-		button.pressed.connect(callable)
+	var callable_pack: Dictionary = get_callable_pack(callable)
+	button.pressed.connect(call_callable_pack.bind(callable_pack))
+
 	if close_after_press:
 		button.pressed.connect(exit_option_container)
 
@@ -39,8 +52,9 @@ func add_long_press_button(
 	close_after_press: bool = one_shot,
 	) -> void:
 
-	if callable.is_valid():
-		button.long_pressed.connect(callable)
+	var callable_pack: Dictionary = get_callable_pack(callable)
+	button.long_pressed.connect(call_callable_pack.bind(callable_pack))
+
 	if close_after_press:
 		button.long_pressed.connect(exit_option_container)
 

@@ -38,6 +38,11 @@ func add_sub_option(one_shot: bool = true) -> OptionContainer:
 	return add_option(true, one_shot)
 
 
+func get_button(index: int) -> Button:
+	if _current_container == null: return null
+	return _current_container.get_button(index)
+
+
 func add_button(
 	text: String,
 	callable: Callable = Callable(),
